@@ -74,41 +74,41 @@
                         <tr>
                             <td rowspan="2">Target</td>
                             <td>Health</td>
-                            <td><input type="number" ng-model="model.targetDummy.hp" ng-init="model.targetDummy.hp=2000" min="0" value="model.targetDummy.hp"></td>
+                            <td><input type="number" class="targetInput" name="hp" ng-model="model.targetDummy.hp" ng-init="model.targetDummy.hp=2000" min="0" ng-bind="model.targetDummy.hp"></td>
                             <td>Mana</td>
-                            <td><input type="number" ng-model="model.targetDummy.mp" min="0" ng-init="model.targetDummy.mp=1000"></td>
+                            <td><input type="number" class="targetInput" name="mp" ng-model="model.targetDummy.mp" min="0" ng-init="model.targetDummy.mp=1000"></td>
                             <td>AD</td>
-                            <td><input type="number" ng-model="model.targetDummy.attackDamage" min="0" ng-init="model.targetDummy.attackDamage=150"></td>
+                            <td><input type="number" class="targetInput" name="attackDamage" ng-model="model.targetDummy.attackDamage" min="0" ng-init="model.targetDummy.attackDamage=150"></td>
                             <td>AS</td>
-                            <td><input type="number" ng-model="model.targetDummy.attackSpeed" min="0" max="2.5" ng-init="model.targetDummy.attackSpeed=1.5" step="0.1"></td>
+                            <td><input type="number" class="targetInput" name="attackSpeed" ng-model="model.targetDummy.attackSpeed" min="0" max="2.5" ng-init="model.targetDummy.attackSpeed=1.5" step="0.1"></td>
                             <td>AP</td>
-                            <td><input type="number" ng-model="model.targetDummy.magicDamage" min="0" ng-init="model.targetDummy.magicDamage=0" step="1"></td>
+                            <td><input type="number" class="targetInput" name="magicDamage" ng-model="model.targetDummy.magicDamage" min="0" ng-init="model.targetDummy.magicDamage=0" step="1"></td>
                             <td rowspan="4">PIC</td>
                         </tr>
                         <tr>
                             <td>Health Regen</td>
-                            <td><input type="number" ng-model="model.targetDummy.hpregen" min="0" ng-init="model.targetDummy.hpregen=3.7" step="0.1"></td>
+                            <td><input type="number" class="targetInput" name="hpregen" ng-model="model.targetDummy.hpregen" min="0" ng-init="model.targetDummy.hpregen=3.7" step="0.1"></td>
                             <td>Mana Regen</td>
-                            <td><input type="number" ng-model="model.targetDummy.mpregen" min="0" ng-init="model.targetDummy.mpregen=3.5" step="0.1"></td>
+                            <td><input type="number" class="targetInput" name="mpregen" ng-model="model.targetDummy.mpregen" min="0" ng-init="model.targetDummy.mpregen=3.5" step="0.1"></td>
                             <td>Phys. DPS</td>
-                            <td><input type="number" ng-model="model.targetDummy.physicalDps" min="0" ng-init="model.targetDummy.physicalDps=200"></td>
+                            <td><input type="number" class="targetInput" name="physicalDps" ng-model="model.targetDummy.physicalDps" min="0" ng-init="model.targetDummy.physicalDps=200"></td>
                             <td>Flat Armor Pen</td>
-                            <td><input type="number" ng-model="model.targetDummy.flatArmorPen" min="0" ng-init="model.targetDummy.flatArmorPen=10"></td>
+                            <td><input type="number" class="targetInput" name="flatArmorPen" ng-model="model.targetDummy.flatArmorPen" min="0" ng-init="model.targetDummy.flatArmorPen=10"></td>
                             <td>% Armor Pen</td>
-                            <td><input type="number" ng-model="model.targetDummy.percentArmorPen" min="0" ng-init="model.targetDummy.percentArmorPen=35"></td>
+                            <td><input type="number" class="targetInput" name="percentArmorPen" ng-model="model.targetDummy.percentArmorPen" min="0" ng-init="model.targetDummy.percentArmorPen=35"></td>
                         </tr>
                         <tr>
                             <td ng-init="model.targetDummy.level=18">Level {{model.targetDummy.level}}</td>
                             <td>Armor</td>
-                            <td><input type="number" ng-model="model.targetDummy.armor" min="0" ng-init="model.targetDummy.armor=100"></td>
+                            <td><input type="number" class="targetInput" name="armor" ng-model="model.targetDummy.armor" min="0" ng-init="model.targetDummy.armor=100"></td>
                             <td>MR</td>
-                            <td><input type="number" ng-model="model.targetDummy.spellblock" min="0" ng-init="model.targetDummy.spellblock=70"></td>
+                            <td><input type="number" class="targetInput" name="spellBlock" ng-model="model.targetDummy.spellblock" min="0" ng-init="model.targetDummy.spellblock=70"></td>
                             <td>Magic DPS</td>
-                            <td><input type="number" ng-model="model.targetDummy.magicDps" min="0" ng-init="model.targetDummy.magicDps=50"></td>
+                            <td><input type="number" class="targetInput" name="magicDps" ng-model="model.targetDummy.magicDps" min="0" ng-init="model.targetDummy.magicDps=50"></td>
                             <td>Flat Magic Pen</td>
-                            <td><input type="number" ng-model="model.targetDummy.flatMagicPen" min="0" ng-init="model.targetDummy.flatMagicPen=0"></td>
+                            <td><input type="number" class="targetInput" name="flatMagicPen" ng-model="model.targetDummy.flatMagicPen" min="0" ng-init="model.targetDummy.flatMagicPen=0"></td>
                             <td>% Magic Pen</td>
-                            <td><input type="number" ng-model="model.targetDummy.percentMagicPen" min="0" ng-init="model.targetDummy.percentMagicPen=0"></td>
+                            <td><input type="number" class="targetInput" name="percentMagicPen" ng-model="model.targetDummy.percentMagicPen" min="0" ng-init="model.targetDummy.percentMagicPen=0"></td>
                         </tr>
                         <tr>
                             <td class="dropdown" ng-controller="DropdownCtrl">
@@ -117,16 +117,16 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li ng-repeat="choice in items">
-                                        <a>{{choice}}</a>
+                                        <button ng-click="changePreset(choice)">{{choice}}</button>
                                     </li>
                                 </ul>
                             </td>
                             <td>MS</td>
-                            <td><input type="number" ng-model="model.targetDummy.movespeed" min="110" ng-init="model.targetDummy.movespeed=380"></td>
+                            <td><input type="number" class="targetInput" name="movespeed" ng-model="model.targetDummy.movespeed" min="110" ng-init="model.targetDummy.movespeed=380"></td>
                             <td>Tenacity</td>
-                            <td><input type="number" ng-model="model.targetDummy.tenacity" min="0" max="100" ng-init="model.targetDummy.tenacity=0"></td>
+                            <td><input type="number" class="targetInput" name="tenacity" ng-model="model.targetDummy.tenacity" min="0" max="100" ng-init="model.targetDummy.tenacity=0"></td>
                             <td>True DPS</td>
-                            <td><input type="number" ng-model="model.targetDummy.trueDps" min="0" ng-init="model.targetDummy.trueDps=25"></td>
+                            <td><input type="number" class="targetInput" name="trueDps" ng-model="model.targetDummy.trueDps" min="0" ng-init="model.targetDummy.trueDps=25"></td>
                         </tr>
                     </table>
                 </th>
