@@ -1,162 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="ChampBuilderApp">
 <head lang="en">
     <meta charset="UTF-8">
 
-    <!--<link rel="stylesheet" type="text/css" href="css/app.css">
-    <link rel="stylesheet" type="text/css" href="css/stats_panel.css">
-    <link rel="stylesheet" type="text/css" href="css/graph.css">-->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
-
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js"></script>
-    <script src="js/app.js" type="text/javascript"></script>
-    <script src="js/controllers/build.js" type="text/javascript"></script>
-    <script src="js/controllers/tabmenu.js" type="text/javascript"></script>
-    <script src="js/controllers/dropdown.js" type="text/javascript"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     <title>Champ Builder Alpha</title>
 </head>
 <body>
-    <!--<div id = "header">
-        <span id="header_main">Champ Builder</span>
-        <span id="header_sub">ALPHA</span>
-    </div>-->
-    <h1>Champ Builder ALPHA</h1>
+    <h1>Champ Builder <sup><small>ALPHA</small></sup></h1>
     <br>
-    <div ng-app="ChampBuilderApp" ng-controller="BuildCtrl">
-        <table>
-            <tr>
-                <th>
-                    <table>
-                        <tr>
-                            <td rowspan="3"><img src="img/portraits/Aatrox_Square_0.png" alt="Aatrox"></td>
-                            <td>Aatrox</td>
-                            <td>Build</td>
-                        </tr>
-                        <tr>
-                            <td>Level 18</td>
-                            <td rowspan="2">
-                                <table>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                    </tr>
-                                    <tr>
-                                        <td>4</td>
-                                        <td>5</td>
-                                        <td>6</td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td><img src="img/abilities/Aatrox_Q.png" alt="Q" height="32" width="32"></td>
-                                        <td><img src="img/abilities/Aatrox_W1.png" alt="W" height="32" width="32"></td>
-                                        <td><img src="img/abilities/Aatrox_E.png" alt="E" height="32" width="32"></td>
-                                        <td><img src="img/abilities/Aatrox_R.png" alt="R" height="32" width="32"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                        </tr>
-                    </table>
-                </th>
-                <th>
-                    <table>
-                        <tr>
-                            <td rowspan="2">Target</td>
-                            <td>Health</td>
-                            <td><input type="number" class="targetInput" name="hp" ng-model="model.targetDummy.hp" ng-init="model.targetDummy.hp=2000" min="0" ng-bind="model.targetDummy.hp"></td>
-                            <td>Mana</td>
-                            <td><input type="number" class="targetInput" name="mp" ng-model="model.targetDummy.mp" min="0" ng-init="model.targetDummy.mp=1000"></td>
-                            <td>AD</td>
-                            <td><input type="number" class="targetInput" name="attackDamage" ng-model="model.targetDummy.attackDamage" min="0" ng-init="model.targetDummy.attackDamage=150"></td>
-                            <td>AS</td>
-                            <td><input type="number" class="targetInput" name="attackSpeed" ng-model="model.targetDummy.attackSpeed" min="0" max="2.5" ng-init="model.targetDummy.attackSpeed=1.5" step="0.1"></td>
-                            <td>AP</td>
-                            <td><input type="number" class="targetInput" name="magicDamage" ng-model="model.targetDummy.magicDamage" min="0" ng-init="model.targetDummy.magicDamage=0" step="1"></td>
-                            <td rowspan="4">PIC</td>
-                        </tr>
-                        <tr>
-                            <td>Health Regen</td>
-                            <td><input type="number" class="targetInput" name="hpregen" ng-model="model.targetDummy.hpregen" min="0" ng-init="model.targetDummy.hpregen=3.7" step="0.1"></td>
-                            <td>Mana Regen</td>
-                            <td><input type="number" class="targetInput" name="mpregen" ng-model="model.targetDummy.mpregen" min="0" ng-init="model.targetDummy.mpregen=3.5" step="0.1"></td>
-                            <td>Phys. DPS</td>
-                            <td><input type="number" class="targetInput" name="physicalDps" ng-model="model.targetDummy.physicalDps" min="0" ng-init="model.targetDummy.physicalDps=200"></td>
-                            <td>Flat Armor Pen</td>
-                            <td><input type="number" class="targetInput" name="flatArmorPen" ng-model="model.targetDummy.flatArmorPen" min="0" ng-init="model.targetDummy.flatArmorPen=10"></td>
-                            <td>% Armor Pen</td>
-                            <td><input type="number" class="targetInput" name="percentArmorPen" ng-model="model.targetDummy.percentArmorPen" min="0" ng-init="model.targetDummy.percentArmorPen=35"></td>
-                        </tr>
-                        <tr>
-                            <td ng-init="model.targetDummy.level=18">Level {{model.targetDummy.level}}</td>
-                            <td>Armor</td>
-                            <td><input type="number" class="targetInput" name="armor" ng-model="model.targetDummy.armor" min="0" ng-init="model.targetDummy.armor=100"></td>
-                            <td>MR</td>
-                            <td><input type="number" class="targetInput" name="spellBlock" ng-model="model.targetDummy.spellblock" min="0" ng-init="model.targetDummy.spellblock=70"></td>
-                            <td>Magic DPS</td>
-                            <td><input type="number" class="targetInput" name="magicDps" ng-model="model.targetDummy.magicDps" min="0" ng-init="model.targetDummy.magicDps=50"></td>
-                            <td>Flat Magic Pen</td>
-                            <td><input type="number" class="targetInput" name="flatMagicPen" ng-model="model.targetDummy.flatMagicPen" min="0" ng-init="model.targetDummy.flatMagicPen=0"></td>
-                            <td>% Magic Pen</td>
-                            <td><input type="number" class="targetInput" name="percentMagicPen" ng-model="model.targetDummy.percentMagicPen" min="0" ng-init="model.targetDummy.percentMagicPen=0"></td>
-                        </tr>
-                        <tr>
-                            <td class="dropdown" ng-controller="DropdownCtrl">
-                                <a class="dropdown-toggle">
-                                    Presets
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li ng-repeat="choice in items">
-                                        <button ng-click="changePreset(choice)">{{choice}}</button>
-                                    </li>
-                                </ul>
-                            </td>
-                            <td>MS</td>
-                            <td><input type="number" class="targetInput" name="movespeed" ng-model="model.targetDummy.movespeed" min="110" ng-init="model.targetDummy.movespeed=380"></td>
-                            <td>Tenacity</td>
-                            <td><input type="number" class="targetInput" name="tenacity" ng-model="model.targetDummy.tenacity" min="0" max="100" ng-init="model.targetDummy.tenacity=0"></td>
-                            <td>True DPS</td>
-                            <td><input type="number" class="targetInput" name="trueDps" ng-model="model.targetDummy.trueDps" min="0" ng-init="model.targetDummy.trueDps=25"></td>
-                        </tr>
-                    </table>
-                </th>
-            </tr>
-        </table>
-        <div ng-controller="TabMenuCtrl">
-            <tabset justified="true">
-                <tab heading="Composite">
-                    <canvas></canvas>
-                </tab>
-                <tab heading="Damage">
-                    <canvas></canvas>
-                </tab>
-                <tab heading="Durability">
-                    <canvas></canvas>
-                </tab>
-                <tab heading="Disruption">
-                    <canvas></canvas>
-                </tab>
-                <tab heading="Chasedown">
-                    <canvas></canvas>
-                </tab>
-                <tab heading="Kiting">
-                    <canvas></canvas>
-                </tab>
-            </tabset>
+
+    <!-- Info panels -->
+    <table>
+        <tr>
+            <!-- Champ info panel -->
+            <th>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <table>
+                            <tr>
+                                <td rowspan="3"><img src="img/portraits/Aatrox_Square_0.png" alt="Aatrox"></td>
+                                <td>Aatrox</td>
+                                <td>Level 18</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td><img src="img/abilities/Aatrox_Q.png" alt="Q" height="32" width="32"></td>
+                                            <td><img src="img/abilities/Aatrox_W1.png" alt="W" height="32" width="32"></td>
+                                            <td><img src="img/abilities/Aatrox_E.png" alt="E" height="32" width="32"></td>
+                                            <td><img src="img/abilities/Aatrox_R.png" alt="R" height="32" width="32"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>5</td>
+                                            <td>5</td>
+                                            <td>3</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td><img src="img/items/blank.png" alt="No Item" height="32" width="32"></td>
+                                            <td><img src="img/items/blank.png" alt="No Item" height="32" width="32"></td>
+                                            <td><img src="img/items/blank.png" alt="No Item" height="32" width="32"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><img src="img/items/blank.png" alt="No Item" height="32" width="32"></td>
+                                            <td><img src="img/items/blank.png" alt="No Item" height="32" width="32"></td>
+                                            <td><img src="img/items/blank.png" alt="No Item" height="32" width="32"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </th>
+
+            <!-- Target info panel -->
+            <th>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <table>
+                            <tr>
+                                <td rowspan="4"><img src="img/portraits/Teemo_Square_0.png" alt="Dummy"></td>
+                                <td>Target Dummy</td>
+                                <td>Level 18</td>
+
+                            </tr>
+                            <tr>
+                                <td><img src="img/items/bfsword.png" alt="AD" height="32" width="32">Physical DPS</td>
+                                <td></td>
+                                <td><img src="img/items/chainvest.png" alt="Armor" height="32" width="32">Effective P. Health</td>
+                                <td></td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            Target Options <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a data-target="#">Marksman</a></li>
+                                            <li><a data-target="#">Assassin</a></li>
+                                            <li><a data-target="#">Mage</a></li>
+                                            <li><a data-target="#">Fighter</a></li>
+                                            <li><a data-target="#">Tank</a></li>
+                                            <li class="divider"></li>
+                                            <li><a data-toggle="modal" data-target="#customModal">Custom...</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="img/items/needlesslylargerod.png" alt="AP" height="32" width="32">Magical DPS</td>
+                                <td></td>
+                                <td><img src="img/items/negatroncloak.png" alt="MR" height="32" width="32">Effective M. Health</td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </table>
+
+    <!-- Edit Target Modal -->
+    <div class="modal fade" id="customModal" tabindex="-1" role="dialog" aria-labelledby="customizeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="customizeLabel">Customize Stats</h4>
+                </div>
+                <div class="modal-body">
+                    Coming Soon<sup>TM</sup>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#composite_tab" data-toggle="tab">Composite</a></li>
+        <li><a href="#damage_tab" data-toggle="tab">Damage</a></li>
+        <li><a href="#durability_tab" data-toggle="tab">Durability</a></li>
+        <li><a href="#disruption_tab" data-toggle="tab">Disruption</a></li>
+        <li><a href="#chasedown_tab" data-toggle="tab">Chasedown</a></li>
+        <li><a href="#escape_tab" data-toggle="tab">Escape</a></li>
+    </ul>
 
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="composite_tab">Composite</div>
+        <div class="tab-pane" id="damage_tab">Damage</div>
+        <div class="tab-pane" id="durability_tab">Durability</div>
+        <div class="tab-pane" id="disruption_tab">Disruption</div>
+        <div class="tab-pane" id="chasedown_tab">Chasedown</div>
+        <div class="tab-pane" id="escape_tab">Escape</div>
+    </div>
+
+    <button>BUILD</button>
 </body>
 
 
