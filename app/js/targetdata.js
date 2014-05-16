@@ -5,6 +5,8 @@
 var targetData = null;
 
 $(function() {
+    setToPreset("marksman");
+
     $(".editPreset").click(function () {
         setToPreset(event.target.id);
     });

@@ -5,10 +5,12 @@
 
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/app.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="js/targetdata.js"></script>
+    <script src="js/graph.js"></script>
 
     <title>Champ Builder Alpha</title>
 </head>
@@ -34,7 +36,7 @@
                                     <table>
                                         <tr>
                                             <td><img src="img/abilities/Aatrox_Q.png" alt="Q" height="32" width="32"></td>
-                                            <td><img src="img/abilities/Aatrox_W1.png" alt="W" height="32" width="32"></td>
+                                            <td><img src="img/abilities/Aatrox_W.png" alt="W" height="32" width="32"></td>
                                             <td><img src="img/abilities/Aatrox_E.png" alt="E" height="32" width="32"></td>
                                             <td><img src="img/abilities/Aatrox_R.png" alt="R" height="32" width="32"></td>
                                         </tr>
@@ -143,12 +145,24 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div class="tab-pane active" id="composite_tab">Composite</div>
-        <div class="tab-pane" id="damage_tab">Damage</div>
-        <div class="tab-pane" id="durability_tab">Durability</div>
-        <div class="tab-pane" id="disruption_tab">Disruption</div>
-        <div class="tab-pane" id="chasedown_tab">Chasedown</div>
-        <div class="tab-pane" id="escape_tab">Escape</div>
+        <div class="tab-pane active" id="composite_tab">
+            <canvas class="graph" id="composite_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Damage Dealt"></canvas>
+        </div>
+        <div class="tab-pane" id="damage_tab">
+            <canvas class="graph" id="damage_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Damage Dealt"></canvas>
+        </div>
+        <div class="tab-pane" id="durability_tab">
+            <canvas class="graph" id="durability_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Health Remaining"></canvas>
+        </div>
+        <div class="tab-pane" id="disruption_tab">
+            <canvas class="graph" id="disruption_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Movement Prevented"></canvas>
+        </div>
+        <div class="tab-pane" id="chasedown_tab">
+            <canvas class="graph" id="chasedown_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Distance"></canvas>
+        </div>
+        <div class="tab-pane" id="escape_tab">
+            <canvas class="graph" id="escape_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Distance"></canvas>
+        </div>
     </div>
 
     <button>BUILD</button>
