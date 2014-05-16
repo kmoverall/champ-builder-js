@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="js/targetdata.js"></script>
 
     <title>Champ Builder Alpha</title>
 </head>
@@ -78,20 +79,20 @@
                             </tr>
                             <tr>
                                 <td><img src="img/items/bfsword.png" alt="AD" height="32" width="32">Physical DPS</td>
-                                <td></td>
-                                <td><img src="img/items/chainvest.png" alt="Armor" height="32" width="32">Effective P. Health</td>
-                                <td></td>
+                                <td id="physicalDPS"></td>
+                                <td><img src="img/items/chainvest.png" alt="Armor" height="32" width="32">Physical Health</td>
+                                <td id="physicalHealth"></td>
                                 <td>
                                     <div class="dropdown">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                             Target Options <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li><a data-target="#">Marksman</a></li>
-                                            <li><a data-target="#">Assassin</a></li>
-                                            <li><a data-target="#">Mage</a></li>
-                                            <li><a data-target="#">Fighter</a></li>
-                                            <li><a data-target="#">Tank</a></li>
+                                            <li><a data-target="#" class="editPreset" id="marksman">Marksman</a></li>
+                                            <li><a data-target="#" class="editPreset" id="assassin">Assassin</a></li>
+                                            <li><a data-target="#" class="editPreset" id="mage">Mage</a></li>
+                                            <li><a data-target="#" class="editPreset" id="fighter">Fighter</a></li>
+                                            <li><a data-target="#" class="editPreset" id="tank">Tank</a></li>
                                             <li class="divider"></li>
                                             <li><a data-toggle="modal" data-target="#customModal">Custom...</a></li>
                                         </ul>
@@ -100,9 +101,9 @@
                             </tr>
                             <tr>
                                 <td><img src="img/items/needlesslylargerod.png" alt="AP" height="32" width="32">Magical DPS</td>
-                                <td></td>
-                                <td><img src="img/items/negatroncloak.png" alt="MR" height="32" width="32">Effective M. Health</td>
-                                <td></td>
+                                <td id="magicalDPS"></td>
+                                <td><img src="img/items/negatroncloak.png" alt="MR" height="32" width="32">Magical Health</td>
+                                <td id="magicalHealth"></td>
                             </tr>
                         </table>
                     </div>

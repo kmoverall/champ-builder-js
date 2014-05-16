@@ -16,7 +16,7 @@
         "flatmagicpen": 0,
         "percentmagicpen": 0,
         "physicaldps": 100,
-        "magicdps": 25,
+        "magicaldps": 25,
         "lifesteal": 0.18,
         "spellvamp": 0,
         "cdr": 0
@@ -38,7 +38,7 @@
         "flatmagicpen": 0,
         "percentmagicpen": 0,
         "physicaldps": 270,
-        "magicdps": 0,
+        "magicaldps": 0,
         "lifesteal": 0.12,
         "spellvamp": 0,
         "cdr": 0.1
@@ -60,7 +60,7 @@
         "flatmagicpen": 23,
         "percentmagicpen": 0.389,
         "physicaldps": 0,
-        "magicdps": 550,
+        "magicaldps": 550,
         "lifesteal": 0,
         "spellvamp": 0,
         "cdr": 0.25
@@ -82,7 +82,7 @@
         "flatmagicpen": 0,
         "percentmagicpen": 0,
         "physicaldps": 140,
-        "magicdps": 150,
+        "magicaldps": 150,
         "lifesteal": 0.12,
         "spellvamp": 0,
         "cdr": 0
@@ -104,7 +104,7 @@
         "flatmagicpen": 0,
         "percentmagicpen": 0,
         "physicaldps": 0,
-        "magicdps": 200,
+        "magicaldps": 200,
         "lifesteal": 0,
         "spellvamp": 0,
         "cdr": 0.2
