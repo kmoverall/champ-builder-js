@@ -7,6 +7,7 @@
                 "perlevel": 80,
                 "flatbonus": 70,
                 "percentbonus": 0,
+                "bonus": 70,
                 "current": 1900,
                 "total": 1900
             },
@@ -37,6 +38,7 @@
                 "perlevel": 3,
                 "flatbonus": 127,
                 "percentbonus": 0.1,
+                "bonus": 149.8,
                 "current": 250.8
             },
             "attackspeed": {
@@ -48,13 +50,14 @@
             "attackrange": {
                 "base": 550,
                 "flatbonus": 0,
-                "current": 0
+                "current": 550
             },
             "armor": {
                 "base": 17,
                 "perlevel": 3.5,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 80
             },
             "magicresistance": {
@@ -62,6 +65,7 @@
                 "perlevel": 0,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 30
             },
             "movementspeed": {
@@ -69,6 +73,7 @@
                 "perlevel": 0,
                 "flatbonus": 45,
                 "percentbonus": 0.06,
+                "multpercentbonus": 0,
                 "current": 392.2
             },
             "tenacity": 0,
@@ -93,6 +98,21 @@
             "critical": {
                 "chance": 0.45,
                 "damage": 2.5
+            },
+            //Describes damage reductions outside of resistances
+            "damagereduction": {
+                "auto": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "physical": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "magic": {
+                    "flat": 0,
+                    "percent": 0
+                }
             }
         },
         "skills": {
@@ -116,6 +136,7 @@
                 "perlevel": 85,
                 "flatbonus": 270,
                 "percentbonus": 0,
+                "bonus": 270,
                 "current": 2240,
                 "total": 2240
             },
@@ -146,6 +167,7 @@
                 "perlevel": 3.1,
                 "flatbonus": 172,
                 "percentbonus": 0,
+                "bonus": 172,
                 "current": 277.8
             },
             "attackspeed": {
@@ -164,6 +186,7 @@
                 "perlevel": 3.5,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 84
             },
             "magicresistance": {
@@ -171,6 +194,7 @@
                 "perlevel": 1.25,
                 "flatbonus": 25,
                 "percentbonus": 0,
+                "bonus": 25,
                 "current": 77.5
             },
             "movementspeed": {
@@ -178,6 +202,7 @@
                 "perlevel": 0,
                 "flatbonus": 45,
                 "percentbonus": 0,
+                "multpercentbonus": 0,
                 "current": 395
             },
             "tenacity": 0.35,
@@ -202,6 +227,21 @@
             "critical": {
                 "chance": 0,
                 "damage": 2
+            },
+            //Describes damage reductions outside of resistances
+            "damagereduction": {
+                "auto": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "physical": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "magic": {
+                    "flat": 0,
+                    "percent": 0
+                }
             }
         },
         "skills": {
@@ -230,6 +270,7 @@
                 "perlevel": 79,
                 "flatbonus": 60,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 1867,
                 "total": 1867
             },
@@ -260,6 +301,7 @@
                 "perlevel": 2.6,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 90.8
             },
             "attackspeed": {
@@ -278,6 +320,7 @@
                 "perlevel": 3,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 66
             },
             "magicresistance": {
@@ -285,6 +328,7 @@
                 "perlevel": 0,
                 "flatbonus": 25,
                 "percentbonus": 0,
+                "bonus": 25,
                 "current": 55
             },
             "movementspeed": {
@@ -292,6 +336,7 @@
                 "perlevel": 0,
                 "flatbonus": 45,
                 "percentbonus": 0,
+                "multpercentbonus": 0,
                 "current": 370
             },
             "tenacity": 0,
@@ -316,6 +361,21 @@
             "critical": {
                 "chance": 0,
                 "damage": 2
+            },
+            //Describes damage reductions outside of resistances
+            "damagereduction": {
+                "auto": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "physical": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "magic": {
+                    "flat": 0,
+                    "percent": 0
+                }
             }
         },
         "skills": {
@@ -334,11 +394,7 @@
                 "damagetype": "magical",
                 "cooldown": 20
             }
-        },
-        "effects": [],
-        "canCast": true,
-        "canAttack": true,
-        "canMove": true
+        }
     },
     "fighter": {
         "stats": {
@@ -348,6 +404,7 @@
                 "perlevel": 80,
                 "flatbonus": 70,
                 "percentbonus": 0,
+                "bonus": 70,
                 "current": 1900,
                 "total": 1900
             },
@@ -378,6 +435,7 @@
                 "perlevel": 3,
                 "flatbonus": 127,
                 "percentbonus": 0.1,
+                "bonus": 149.8,
                 "current": 250.8
             },
             "attackspeed": {
@@ -389,13 +447,14 @@
             "attackrange": {
                 "base": 550,
                 "flatbonus": 0,
-                "current": 0
+                "current": 550
             },
             "armor": {
                 "base": 17,
                 "perlevel": 3.5,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 80
             },
             "magicresistance": {
@@ -403,6 +462,7 @@
                 "perlevel": 0,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 30
             },
             "movementspeed": {
@@ -410,6 +470,7 @@
                 "perlevel": 0,
                 "flatbonus": 45,
                 "percentbonus": 0.06,
+                "multpercentbonus": 0,
                 "current": 392.2
             },
             "tenacity": 0,
@@ -434,6 +495,21 @@
             "critical": {
                 "chance": 0.45,
                 "damage": 2.5
+            },
+            //Describes damage reductions outside of resistances
+            "damagereduction": {
+                "auto": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "physical": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "magic": {
+                    "flat": 0,
+                    "percent": 0
+                }
             }
         },
         "skills": {
@@ -447,11 +523,7 @@
                 "damagetype": "magical",
                 "cooldown": 5
             }
-        },
-        "effects": [],
-        "canCast": true,
-        "canAttack": true,
-        "canMove": true
+        }
     },
     "tank": {
         "stats": {
@@ -461,6 +533,7 @@
                 "perlevel": 80,
                 "flatbonus": 70,
                 "percentbonus": 0,
+                "bonus": 70,
                 "current": 1900,
                 "total": 1900
             },
@@ -491,6 +564,7 @@
                 "perlevel": 3,
                 "flatbonus": 127,
                 "percentbonus": 0.1,
+                "bonus": 149.8,
                 "current": 250.8
             },
             "attackspeed": {
@@ -502,13 +576,14 @@
             "attackrange": {
                 "base": 550,
                 "flatbonus": 0,
-                "current": 0
+                "current": 550
             },
             "armor": {
                 "base": 17,
                 "perlevel": 3.5,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 80
             },
             "magicresistance": {
@@ -516,6 +591,7 @@
                 "perlevel": 0,
                 "flatbonus": 0,
                 "percentbonus": 0,
+                "bonus": 0,
                 "current": 30
             },
             "movementspeed": {
@@ -523,6 +599,7 @@
                 "perlevel": 0,
                 "flatbonus": 45,
                 "percentbonus": 0.06,
+                "multpercentbonus": 0,
                 "current": 392.2
             },
             "tenacity": 0,
@@ -547,6 +624,21 @@
             "critical": {
                 "chance": 0.45,
                 "damage": 2.5
+            },
+            //Describes damage reductions outside of resistances
+            "damagereduction": {
+                "auto": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "physical": {
+                    "flat": 0,
+                    "percent": 0
+                },
+                "magic": {
+                    "flat": 0,
+                    "percent": 0
+                }
             }
         },
         "skills": {
@@ -560,11 +652,7 @@
                 "damagetype": "magical",
                 "cooldown": 5
             }
-        },
-        "effects": [],
-        "canCast": true,
-        "canAttack": true,
-        "canMove": true
+        }
     }
 }
 

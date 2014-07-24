@@ -11,6 +11,27 @@ var STAT_LINK_MAP = {
     bonusattackdamage: ["attackdamage", "bonus"]
 }
 
+//Describes interactions between target and champion that occur, for reference by effects
+var EVENTS = {
+    ATTACKED: 0,
+    WAS_ATTACKED: 1,
+    USED_SKILL: 2,
+    HIT_BY_SKILL: 3,
+    HIT_BY_PROJECTILE: 4
+}
+
+var DAMAGE_TYPES = {
+    PHYSICAL: 0,
+    MAGIC: 1,
+    TRUE: 2
+}
+
+var DAMAGE_SOURCE = {
+    AUTOATTACK: 0,
+    SKILL: 1,
+    OTHER: 2
+}
+
 //Loading functions
 $(function() {
     loadChampion("aatrox");
@@ -20,7 +41,7 @@ function loadChampion(champName) {
     champId = CHAMP_ID_MAP[champName];
     var jqxhr = $.getJSON("https://na.api.pvp.net/api/lol/static-data/na/v1.2/champion/"+champId+"?champData=all&api_key=d4e9f82e-4344-4719-a68f-1015c61a6bb4", function(data) {
         Champion.data = data;
-        Champion.scripts = "js/champion_scripts/"+champName+".js";
+        Champion.scriptlocation = "js/champion_scripts/"+champName+".js";
         Champion.initialize();
         console.log(Champion);
     })
@@ -32,7 +53,7 @@ function loadChampion(champName) {
 
 var Champion = {
     data: {},
-    scripts: "",
+    scriptlocation: "",
     stats: {
         level: 18,
         health: {
@@ -131,14 +152,34 @@ var Champion = {
         critical: {
             chance: 0,
             damage: 2
+        },
+        //Describes damage reductions outside of resistances
+        damagereduction: {
+            auto: {
+                flat: 0,
+                percent: 0
+            },
+            physical: {
+                flat: 0,
+                percent: 0
+            },
+            magic: {
+                flat: 0,
+                percent: 0
+            }
         }
     },
     manaless: false,
     skills: [],
-    effects: [],
-    canCast: true,
-    canAttack: true,
-    canMove: true,
+    effects: {},
+    //Crowd control is listed by restricted actions as the key and duration as the value
+    //Slows are listed as an effect and a duration
+    crowdcontrol: {
+        cantMove: 0,
+        cantAttack: 0,
+        cantCast: 0,
+        slows: {}
+    },
 
     initialize: function() {
         this.stats.health.base = this.data["stats"]["hp"];

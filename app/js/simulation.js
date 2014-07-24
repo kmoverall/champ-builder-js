@@ -3,9 +3,9 @@
  */
 function simulate() {
 
-    $.getScript( Champion.scripts, function( data, textStatus, jqxhr ) {
-        console.log("loaded champ scripts: "+Champion.scripts);
-        
+    $.getScript( Champion.scriptlocation, function( data, textStatus, jqxhr ) {
+        console.log("loaded champ scripts: "+Champion.scriptlocation);
+
     });
 
     return {
