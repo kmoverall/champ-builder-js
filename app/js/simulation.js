@@ -3,12 +3,9 @@
  */
 function simulate() {
 
-    $.getScript( championData["script"], function( data, textStatus, jqxhr ) {
-        console.log("loaded champ scripts: "+championData["script"]);
-        var simChamp = new Champion();
-        simChamp.initialize();
-        console.log("Created champion");
-        console.log(simChamp);
+    $.getScript( Champion.scripts, function( data, textStatus, jqxhr ) {
+        console.log("loaded champ scripts: "+Champion.scripts);
+        
     });
 
     return {

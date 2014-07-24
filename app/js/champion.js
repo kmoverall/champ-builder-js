@@ -20,9 +20,9 @@ function loadChampion(champName) {
     champId = CHAMP_ID_MAP[champName];
     var jqxhr = $.getJSON("https://na.api.pvp.net/api/lol/static-data/na/v1.2/champion/"+champId+"?champData=all&api_key=d4e9f82e-4344-4719-a68f-1015c61a6bb4", function(data) {
         Champion.data = data;
-        //Champion.script = "js/champion_scripts/"+champName+".js";
-        console.log(Champion);
+        Champion.scripts = "js/champion_scripts/"+champName+".js";
         Champion.initialize();
+        console.log(Champion);
     })
         .fail(function() {
             alert( "Error connecting to Riot API. Please try again later" );
@@ -32,6 +32,7 @@ function loadChampion(champName) {
 
 var Champion = {
     data: {},
+    scripts: "",
     stats: {
         level: 18,
         health: {
@@ -155,7 +156,7 @@ var Champion = {
         this.stats.attackdamage.base = this.data["stats"]["attackdamage"];
         this.stats.attackdamage.perlevel = this.data["stats"]["attackdamageperlevel"];
 
-        this.stats.attackspeed.base = 1/(1.6*(1-this.data["stats"]["attackspeedoffset"]));
+        this.stats.attackspeed.base = 0.625/(1+this.data["stats"]["attackspeedoffset"]);
         this.stats.attackspeed.perlevel = this.data["stats"]["attackspeedperlevel"]/100;
 
         this.stats.attackrange.base = this.data["stats"]["attackrange"];
@@ -193,7 +194,7 @@ var Champion = {
         }
         this.stats.attackrange.current = this.stats.attackrange.base + this.stats.attackrange.flatbonus;
 
-        this.stats.armor.current = (this.stats.armor.base+ this.stats.armor.perlevel*this.stats.level + this.stats.armor.flatbonus)*(1+this.stats.armor.percentbonus);
+        this.stats.armor.current = (this.stats.armor.base + this.stats.armor.perlevel*this.stats.level + this.stats.armor.flatbonus)*(1+this.stats.armor.percentbonus);
         this.stats.armor.bonus = this.stats.armor.flatbonus*(1+this.stats.armor.percentbonus) + (this.stats.armor.base + this.stats.armor.perlevel*this.stats.level + this.stats.armor.flatbonus)*this.stats.armor.percentbonus;
         this.stats.magicresistance.current = (this.stats.magicresistance.base+ this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*(1+this.stats.magicresistance.percentbonus);
         this.stats.magicresistance.bonus = this.stats.magicresistance.flatbonus*(1+this.stats.magicresistance.percentbonus) + (this.stats.magicresistance.base + this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*this.stats.magicresistance.percentbonus;
