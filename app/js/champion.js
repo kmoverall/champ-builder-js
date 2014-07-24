@@ -21,7 +21,8 @@ function loadChampion(champName) {
     var jqxhr = $.getJSON("https://na.api.pvp.net/api/lol/static-data/na/v1.2/champion/"+champId+"?champData=all&api_key=d4e9f82e-4344-4719-a68f-1015c61a6bb4", function(data) {
         Champion.data = data;
         //Champion.script = "js/champion_scripts/"+champName+".js";
-        console.log(championData);
+        console.log(Champion);
+        Champion.initialize();
     })
         .fail(function() {
             alert( "Error connecting to Riot API. Please try again later" );
@@ -30,7 +31,7 @@ function loadChampion(champName) {
 }
 
 var Champion = {
-    data: championData,
+    data: {},
     stats: {
         level: 18,
         health: {
@@ -139,82 +140,80 @@ var Champion = {
     canMove: true,
 
     initialize: function() {
-        this.data = championData;
+        this.stats.health.base = this.data["stats"]["hp"];
+        this.stats.health.perlevel = this.data["stats"]["hpperlevel"];
 
-        this.health.base = this.data["stats"]["hp"];
-        this.health.perlevel = this.data["stats"]["hpperlevel"];
+        this.stats.healthregen.base = this.data["stats"]["hpregen"];
+        this.stats.healthregen.perlevel = this.data["stats"]["hpregenperlevel"];
 
-        this.healthregen.base = this.data["stats"]["hpregen"];
-        this.healthregen.perlevel = this.data["stats"]["hpregenperlevel"];
+        this.stats.mana.base = this.data["stats"]["mp"];
+        this.stats.mana.perlevel = this.data["stats"]["mpperlevel"];
 
-        this.mana.base = this.data["stats"]["mp"];
-        this.mana.perlevel = this.data["stats"]["mpperlevel"];
+        this.stats.manaregen.base = this.data["stats"]["mpregen"];
+        this.stats.manaregen.perlevel = this.data["stats"]["mpregenperlevel"];
 
-        this.manaregen.base = this.data["stats"]["mpregen"];
-        this.manaregen.perlevel = this.data["stats"]["mpregenperlevel"];
+        this.stats.attackdamage.base = this.data["stats"]["attackdamage"];
+        this.stats.attackdamage.perlevel = this.data["stats"]["attackdamageperlevel"];
 
-        this.attackdamage.base = this.data["stats"]["attackdamage"];
-        this.attackdamage.perlevel = this.data["stats"]["attackdamageperlevel"];
+        this.stats.attackspeed.base = 1/(1.6*(1-this.data["stats"]["attackspeedoffset"]));
+        this.stats.attackspeed.perlevel = this.data["stats"]["attackspeedperlevel"]/100;
 
-        this.attackspeed.base = 1/(1.6*(1-this.data["stats"]["attackspeedoffset"]));
-        this.attackspeed.perlevel = this.data["stats"]["attackspeedperlevel"]/100;
+        this.stats.attackrange.base = this.data["stats"]["attackrange"];
 
-        this.attackrange.base = this.data["stats"]["attackrange"];
+        this.stats.armor.base = this.data["stats"]["armor"];
+        this.stats.armor.perlevel = this.data["stats"]["armorperlevel"];
 
-        this.armor.base = this.data["stats"]["armor"];
-        this.armor.perlevel = this.data["stats"]["armorperlevel"];
+        this.stats.magicresistance.base = this.data["stats"]["spellblock"];
+        this.stats.magicresistance.perlevel = this.data["stats"]["spellblockperlevel"];
 
-        this.magicresistance.base = this.data["stats"]["spellblock"];
-        this.magicresistance.perlevel = this.data["stats"]["spellblockperlevel"];
-
-        this.movementspeed.base = this.data["stats"]["movespeed"];
+        this.stats.movementspeed.base = this.data["stats"]["movespeed"];
 
         this.calculateStats();
 
-        this.health.current = this.health.total;
-        this.mana.current = this.mana.total;
+        this.stats.health.current = this.stats.health.total;
+        this.stats.mana.current = this.stats.mana.total;
     },
 
     calculateStats: function() {
-        oldHealth = this.health.total;
-        this.health.total = (this.health.base+ this.health.perlevel*this.level + this.health.flatbonus)*(1+this.health.percentbonus);
-        this.health.bonus = this.health.flatbonus*(1+this.health.percentbonus) + (this.health.base + this.health.perlevel*this.level + this.health.flatbonus)*this.health.percentbonus;
-        this.healthregen.current = (this.healthregen.base + this.healthregen.perlevel*this.level + this.healthregen.flatbonus)*(1+this.healthregen.percentbonus);
+        oldHealth = this.stats.health.total;
+        this.stats.health.total = (this.stats.health.base+ this.stats.health.perlevel*this.stats.level + this.stats.health.flatbonus)*(1+this.stats.health.percentbonus);
+        this.stats.health.bonus = this.stats.health.flatbonus*(1+this.stats.health.percentbonus) + (this.stats.health.base + this.stats.health.perlevel*this.stats.level + this.stats.health.flatbonus)*this.stats.health.percentbonus;
+        this.stats.healthregen.current = (this.stats.healthregen.base + this.stats.healthregen.perlevel*this.stats.level + this.stats.healthregen.flatbonus)*(1+this.stats.healthregen.percentbonus);
 
-        oldMana = this.mana.total;
-        this.mana.total = (this.mana.base + this.mana.perlevel*this.level + this.mana.flatbonus)*(1+this.mana.percentbonus);
-        this.manaregen.current = (this.manaregen.base + this.manaregen.perlevel*this.level + this.manaregen.flatbonus)*(1+this.manaregen.percentbonus);
+        oldMana = this.stats.mana.total;
+        this.stats.mana.total = (this.stats.mana.base + this.stats.mana.perlevel*this.stats.level + this.stats.mana.flatbonus)*(1+this.stats.mana.percentbonus);
+        this.stats.manaregen.current = (this.stats.manaregen.base + this.stats.manaregen.perlevel*this.stats.level + this.stats.manaregen.flatbonus)*(1+this.stats.manaregen.percentbonus);
 
-        this.attackdamage.current = (this.attackdamage.base + this.attackdamage.perlevel*this.level + this.attackdamage.flatbonus)*(1+this.attackdamage.percentbonus);
-        this.attackdamage.bonus = this.attackdamage.flatbonus*(1+this.attackdamage.percentbonus) + (this.attackdamage.base + this.attackdamage.perlevel*this.level + this.attackdamage.flatbonus)*this.attackdamage.percentbonus;
-        this.attackspeed.current = this.attackspeed.base*(1+this.attackspeed.perlevel*this.level+this.attackspeed.percentbonus);
+        this.stats.attackdamage.current = (this.stats.attackdamage.base + this.stats.attackdamage.perlevel*this.stats.level + this.stats.attackdamage.flatbonus)*(1+this.stats.attackdamage.percentbonus);
+        this.stats.attackdamage.bonus = this.stats.attackdamage.flatbonus*(1+this.stats.attackdamage.percentbonus) + (this.stats.attackdamage.base + this.stats.attackdamage.perlevel*this.stats.level + this.stats.attackdamage.flatbonus)*this.stats.attackdamage.percentbonus;
+        this.stats.attackspeed.current = this.stats.attackspeed.base*(1+this.stats.attackspeed.perlevel*this.stats.level+this.stats.attackspeed.percentbonus);
         //Apply attack speed cap
-        if(this.attackspeed.current > 2.5) {
-            this.attackspeed.current = 2.5;
+        if(this.stats.attackspeed.current > 2.5) {
+            this.stats.attackspeed.current = 2.5;
         }
-        this.attackrange.current = this.attackrange.base + this.attackrange.flatbonus;
+        this.stats.attackrange.current = this.stats.attackrange.base + this.stats.attackrange.flatbonus;
 
-        this.armor.current = (this.data.armor.base+ this.armor.perlevel*this.level + this.armor.flatbonus)*(1+this.armor.percentbonus);
-        this.armor.bonus = this.armor.flatbonus*(1+this.armor.percentbonus) + (this.armor.base + this.armor.perlevel*this.level + this.armor.flatbonus)*this.armor.percentbonus;
-        this.magicresistance.current = (this.data.magicresistance.base+ this.magicresistance.perlevel*this.level + this.magicresistance.flatbonus)*(1+this.magicresistance.percentbonus);
-        this.magicresistance.bonus = this.magicresistance.flatbonus*(1+this.magicresistance.percentbonus) + (this.magicresistance.base + this.magicresistance.perlevel*this.level + this.magicresistance.flatbonus)*this.magicresistance.percentbonus;
+        this.stats.armor.current = (this.stats.armor.base+ this.stats.armor.perlevel*this.stats.level + this.stats.armor.flatbonus)*(1+this.stats.armor.percentbonus);
+        this.stats.armor.bonus = this.stats.armor.flatbonus*(1+this.stats.armor.percentbonus) + (this.stats.armor.base + this.stats.armor.perlevel*this.stats.level + this.stats.armor.flatbonus)*this.stats.armor.percentbonus;
+        this.stats.magicresistance.current = (this.stats.magicresistance.base+ this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*(1+this.stats.magicresistance.percentbonus);
+        this.stats.magicresistance.bonus = this.stats.magicresistance.flatbonus*(1+this.stats.magicresistance.percentbonus) + (this.stats.magicresistance.base + this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*this.stats.magicresistance.percentbonus;
 
-        this.movementspeed.current = (this.movementspeed.base + this.movementspeed.flatbonus)*(1+this.movementspeed.percentbonus)*(1+this.movementspeed.multpercentbonus);
+        this.stats.movementspeed.current = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
         //Apply soft movespeed caps
-        if (this.movementspeed.current > 490) {
-            this.movementspeed.current = this.movementspeed.current*0.5 + 230;
+        if (this.stats.movementspeed.current > 490) {
+            this.stats.movementspeed.current = this.stats.movementspeed.current*0.5 + 230;
         }
-        else if (this.movementspeed.current > 415) {
-            this.movementspeed.current = this.movementspeed.current*0.8 + 83;
+        else if (this.stats.movementspeed.current > 415) {
+            this.stats.movementspeed.current = this.stats.movementspeed.current*0.8 + 83;
         }
-        else if (this.movementspeed.current < 220) {
-            this.movementspeed.current = this.movementspeed.current*0.5 + 110;
+        else if (this.stats.movementspeed.current < 220) {
+            this.stats.movementspeed.current = this.stats.movementspeed.current*0.5 + 110;
         }
 
-        this.abilitypower.current = (this.abilitypower.base+ this.abilitypower.perlevel*this.level + this.abilitypower.flatbonus)*(1+this.abilitypower.percentbonus);
+        this.stats.abilitypower.current = (this.stats.abilitypower.base+ this.stats.abilitypower.perlevel*this.stats.level + this.stats.abilitypower.flatbonus)*(1+this.stats.abilitypower.percentbonus);
 
-        this.health.current += Math.max(this.health.total - oldHealth, 0);
-        this.mana.current += Math.max(this.mana.total - oldMana, 0);
+        this.stats.health.current += Math.max(this.stats.health.total - oldHealth, 0);
+        this.stats.mana.current += Math.max(this.stats.mana.total - oldMana, 0);
     }
 }
 

@@ -16,7 +16,6 @@ function setToPreset(preset) {
     console.log("Setting Preset");
     var jqxhr = $.getJSON("js/targetpresets.json", function(data){
         targetData = data[preset];
-        console.log(targetData);
         //Calculate stat panel info
         document.getElementById("physicalDPS").innerHTML = String(Math.floor(targetData["stats"]["attackdamage"]["current"]*targetData["stats"]["attackspeed"]["current"]*(1+targetData["stats"]["critical"]["chance"]*targetData["stats"]["critical"]["damage"])
                                                                     + targetData["skills"]["0"]["damage"]/targetData["skills"]["0"]["cooldown"]));
