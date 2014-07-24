@@ -9,7 +9,9 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="js/champion.js"></script>
     <script src="js/targetdata.js"></script>
+    <script src="js/simulation.js"></script>
     <script src="js/graph.js"></script>
 
     <title>Champ Builder Alpha</title>
@@ -146,26 +148,28 @@
     <!-- Tab panes -->
     <div class="tab-content">
         <div class="tab-pane active" id="composite_tab">
-            <canvas class="graph" id="composite_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Damage Dealt"></canvas>
+            <canvas class="graph" id="composite" width="1200" height="600" data-xlabel="Time" data-ylabel="Damage Dealt"></canvas>
         </div>
         <div class="tab-pane" id="damage_tab">
-            <canvas class="graph" id="damage_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Damage Dealt"></canvas>
+            <canvas class="graph" id="damage" width="1200" height="600" data-xlabel="Time" data-ylabel="Damage Dealt"></canvas>
         </div>
         <div class="tab-pane" id="durability_tab">
-            <canvas class="graph" id="durability_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Health Remaining"></canvas>
+            <canvas class="graph" id="durability" width="1200" height="600" data-xlabel="Time" data-ylabel="Health Remaining"></canvas>
         </div>
         <div class="tab-pane" id="disruption_tab">
-            <canvas class="graph" id="disruption_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Movement Prevented"></canvas>
+            <canvas class="graph" id="disruption" width="1200" height="600" data-xlabel="Time" data-ylabel="Movement Prevented"></canvas>
         </div>
         <div class="tab-pane" id="chasedown_tab">
-            <canvas class="graph" id="chasedown_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Distance"></canvas>
+            <canvas class="graph" id="chasedown" width="1200" height="600" data-xlabel="Time" data-ylabel="Distance"></canvas>
         </div>
         <div class="tab-pane" id="escape_tab">
-            <canvas class="graph" id="escape_graph" width="1200" height="600" data-xlabel="Time" data-ylabel="Distance"></canvas>
+            <canvas class="graph" id="escape" width="1200" height="600" data-xlabel="Time" data-ylabel="Distance"></canvas>
         </div>
     </div>
 
-    <button>BUILD</button>
+    <button data-target="#" id="simulateButton">SIMULATE</button>
+    <br>
+    <sub>This product is not endorsed, certified or otherwise approved in any way by Riot Games, Inc. or any of its affiliates.</sub>
 </body>
 
 

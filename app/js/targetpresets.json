@@ -1,112 +1,570 @@
 {
     "marksman": {
-        "health": 2000,
-        "healthregen": 14.5,
-        "mana": 850,
-        "manaregen": 13.5,
-        "attackdamage": 530,
-        "attackspeed": 1.65,
-        "armor": 130,
-        "magicresistance": 97,
-        "movementspeed": 415,
-        "tenacity": 0,
-        "flatarmorpen": 0,
-        "percentarmorpen": 0.389,
-        "abilitypower": 0,
-        "flatmagicpen": 0,
-        "percentmagicpen": 0,
-        "physicaldps": 100,
-        "magicaldps": 25,
-        "lifesteal": 0.18,
-        "spellvamp": 0,
-        "cdr": 0
+        "stats": {
+            "level": 18,
+            "health": {
+                "base": 390,
+                "perlevel": 80,
+                "flatbonus": 70,
+                "percentbonus": 0,
+                "current": 1900,
+                "total": 1900
+            },
+            "healthregen": {
+                "base": 4.75,
+                "perlevel": 0.55,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 14.65
+            },
+            "mana": {
+                "base": 255,
+                "perlevel": 35,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 885,
+                "total": 885
+            },
+            "manaregen": {
+                "base": 6.5,
+                "perlevel": 0.55,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 16.4
+            },
+            "attackdamage": {
+                "base": 47,
+                "perlevel": 3,
+                "flatbonus": 127,
+                "percentbonus": 0.1,
+                "current": 250.8
+            },
+            "attackspeed": {
+                "base": 0.625,
+                "perlevel": 0.035,
+                "percentbonus": 0.65,
+                "current": 1.425
+            },
+            "attackrange": {
+                "base": 550,
+                "flatbonus": 0,
+                "current": 0
+            },
+            "armor": {
+                "base": 17,
+                "perlevel": 3.5,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 80
+            },
+            "magicresistance": {
+                "base": 30,
+                "perlevel": 0,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 30
+            },
+            "movementspeed": {
+                "base": 325,
+                "perlevel": 0,
+                "flatbonus": 45,
+                "percentbonus": 0.06,
+                "current": 392.2
+            },
+            "tenacity": 0,
+            "armorpenetration": {
+                "flat": 0,
+                "percent": 0.35
+            },
+            "abilitypower": {
+                "base": 0,
+                "perlevel": 0,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 0
+            },
+            "magicpenetration": {
+                "flat": 0,
+                "percent": 0
+            },
+            "lifesteal": 0.03,
+            "spellvamp": 0,
+            "cdr": 0,
+            "critical": {
+                "chance": 0.45,
+                "damage": 2.5
+            }
+        },
+        "skills": {
+            "0": {
+                "damage": 647,
+                "damagetype": "physical",
+                "cooldown": 5
+            },
+            "1": {
+                "damage": 140,
+                "damagetype": "magical",
+                "cooldown": 5
+            }
+        }
     },
     "assassin": {
-        "health": 2300,
-        "healthregen": 35,
-        "mana": 1000,
-        "manaregen": 16,
-        "attackdamage": 355,
-        "attackspeed": 1.1,
-        "armor": 135,
-        "magicresistance": 167.5,
-        "movementspeed": 395,
-        "tenacity": 0.35,
-        "flatarmorpen": 21,
-        "percentarmorpen": 0.542,
-        "abilitypower": 0,
-        "flatmagicpen": 0,
-        "percentmagicpen": 0,
-        "physicaldps": 270,
-        "magicaldps": 0,
-        "lifesteal": 0.12,
-        "spellvamp": 0,
-        "cdr": 0.1
+        "stats": {
+            "level": 18,
+            "health": {
+                "base": 440,
+                "perlevel": 85,
+                "flatbonus": 270,
+                "percentbonus": 0,
+                "current": 2240,
+                "total": 2240
+            },
+            "healthregen": {
+                "base": 7.25,
+                "perlevel": 0.75,
+                "flatbonus": 15,
+                "percentbonus": 0,
+                "current": 35.75
+            },
+            "mana": {
+                "base": 260,
+                "perlevel": 40,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 980,
+                "total": 980
+            },
+            "manaregen": {
+                "base": 6.75,
+                "perlevel": 0.55,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 15.75
+            },
+            "attackdamage": {
+                "base": 50,
+                "perlevel": 3.1,
+                "flatbonus": 172,
+                "percentbonus": 0,
+                "current": 277.8
+            },
+            "attackspeed": {
+                "base": 0.668,
+                "perlevel": 0,
+                "percentbonus": 0,
+                "current": 0.992
+            },
+            "attackrange": {
+                "base": 125,
+                "flatbonus": 0,
+                "current": 0
+            },
+            "armor": {
+                "base": 21,
+                "perlevel": 3.5,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 84
+            },
+            "magicresistance": {
+                "base": 30,
+                "perlevel": 1.25,
+                "flatbonus": 25,
+                "percentbonus": 0,
+                "current": 77.5
+            },
+            "movementspeed": {
+                "base": 350,
+                "perlevel": 0,
+                "flatbonus": 45,
+                "percentbonus": 0,
+                "current": 395
+            },
+            "tenacity": 0.35,
+            "armorpenetration": {
+                "flat": 10,
+                "percent": 0.5125
+            },
+            "abilitypower": {
+                "base": 0,
+                "perlevel": 0,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 0
+            },
+            "magicpenetration": {
+                "flat": 0,
+                "percent": 0
+            },
+            "lifesteal": 0.15,
+            "spellvamp": 0,
+            "cdr": 0.1,
+            "critical": {
+                "chance": 0,
+                "damage": 2
+            }
+        },
+        "skills": {
+            "0": {
+                "damage": 1383,
+                "damagetype": "physical",
+                "cooldown": 5
+            },
+            "1": {
+                "damage": 0,
+                "damagetype": "magical",
+                "cooldown": 5
+            },
+            "2": {
+                "damage": 687,
+                "damagetype": "physical",
+                "cooldown": 20
+            }
+        }
     },
     "mage": {
-        "health": 1925,
-        "healthregen": 16,
-        "mana": 1200,
-        "manaregen": 46.5,
-        "attackdamage": 100,
-        "attackspeed": 0.8,
-        "armor": 180,
-        "magicresistance": 110,
-        "movementspeed": 375,
-        "tenacity": 0,
-        "flatarmorpen": 0,
-        "percentarmorpen": 0,
-        "abilitypower": 580,
-        "flatmagicpen": 23,
-        "percentmagicpen": 0.389,
-        "physicaldps": 0,
-        "magicaldps": 550,
-        "lifesteal": 0,
-        "spellvamp": 0,
-        "cdr": 0.25
+        "stats": {
+            "level": 18,
+            "health": {
+                "base": 385,
+                "perlevel": 79,
+                "flatbonus": 60,
+                "percentbonus": 0,
+                "current": 1867,
+                "total": 1867
+            },
+            "healthregen": {
+                "base": 5.95,
+                "perlevel": 0.55,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 15.85
+            },
+            "mana": {
+                "base": 250,
+                "perlevel": 50,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 1150,
+                "total": 1150
+            },
+            "manaregen": {
+                "base": 7,
+                "perlevel": 0.5,
+                "flatbonus": 13,
+                "percentbonus": 0.5,
+                "current": 43.5
+            },
+            "attackdamage": {
+                "base": 44,
+                "perlevel": 2.6,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 90.8
+            },
+            "attackspeed": {
+                "base": 0.658,
+                "perlevel": 0.035,
+                "percentbonus": 0,
+                "current": 1.07254
+            },
+            "attackrange": {
+                "base": 500,
+                "flatbonus": 0,
+                "current": 0
+            },
+            "armor": {
+                "base": 12,
+                "perlevel": 3,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 66
+            },
+            "magicresistance": {
+                "base": 30,
+                "perlevel": 0,
+                "flatbonus": 25,
+                "percentbonus": 0,
+                "current": 55
+            },
+            "movementspeed": {
+                "base": 325,
+                "perlevel": 0,
+                "flatbonus": 45,
+                "percentbonus": 0,
+                "current": 370
+            },
+            "tenacity": 0,
+            "armorpenetration": {
+                "flat": 0,
+                "percent": 0
+            },
+            "abilitypower": {
+                "base": 0,
+                "perlevel": 0,
+                "flatbonus": 265,
+                "percentbonus": 0.3,
+                "current": 344.5
+            },
+            "magicpenetration": {
+                "flat": 15,
+                "percent": 0.35
+            },
+            "lifesteal": 0,
+            "spellvamp": 0,
+            "cdr": 0.2,
+            "critical": {
+                "chance": 0,
+                "damage": 2
+            }
+        },
+        "skills": {
+            "0": {
+                "damage": 0,
+                "damagetype": "physical",
+                "cooldown": 5
+            },
+            "1": {
+                "damage": 2224.81,
+                "damagetype": "magical",
+                "cooldown": 5
+            },
+            "2": {
+                "damage": 541.15,
+                "damagetype": "magical",
+                "cooldown": 20
+            }
+        },
+        "effects": [],
+        "canCast": true,
+        "canAttack": true,
+        "canMove": true
     },
     "fighter": {
-        "health": 3600,
-        "healthregen": 42,
-        "mana": 900,
-        "manaregen": 19,
-        "attackdamage": 215,
-        "attackspeed": 1.0,
-        "armor": 325,
-        "magicresistance": 175,
-        "movementspeed": 390,
-        "tenacity": 0.35,
-        "flatarmorpen": 0,
-        "percentarmorpen": 0,
-        "abilitypower": 0,
-        "flatmagicpen": 0,
-        "percentmagicpen": 0,
-        "physicaldps": 140,
-        "magicaldps": 150,
-        "lifesteal": 0.12,
-        "spellvamp": 0,
-        "cdr": 0
+        "stats": {
+            "level": 18,
+            "health": {
+                "base": 390,
+                "perlevel": 80,
+                "flatbonus": 70,
+                "percentbonus": 0,
+                "current": 1900,
+                "total": 1900
+            },
+            "healthregen": {
+                "base": 4.75,
+                "perlevel": 0.55,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 14.65
+            },
+            "mana": {
+                "base": 255,
+                "perlevel": 35,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 885,
+                "total": 885
+            },
+            "manaregen": {
+                "base": 6.5,
+                "perlevel": 0.55,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 16.4
+            },
+            "attackdamage": {
+                "base": 47,
+                "perlevel": 3,
+                "flatbonus": 127,
+                "percentbonus": 0.1,
+                "current": 250.8
+            },
+            "attackspeed": {
+                "base": 0.625,
+                "perlevel": 0.035,
+                "percentbonus": 0.65,
+                "current": 1.425
+            },
+            "attackrange": {
+                "base": 550,
+                "flatbonus": 0,
+                "current": 0
+            },
+            "armor": {
+                "base": 17,
+                "perlevel": 3.5,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 80
+            },
+            "magicresistance": {
+                "base": 30,
+                "perlevel": 0,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 30
+            },
+            "movementspeed": {
+                "base": 325,
+                "perlevel": 0,
+                "flatbonus": 45,
+                "percentbonus": 0.06,
+                "current": 392.2
+            },
+            "tenacity": 0,
+            "armorpenetration": {
+                "flat": 0,
+                "percent": 0.35
+            },
+            "abilitypower": {
+                "base": 0,
+                "perlevel": 0,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 0
+            },
+            "magicpenetration": {
+                "flat": 0,
+                "percent": 0
+            },
+            "lifesteal": 0.03,
+            "spellvamp": 0,
+            "cdr": 0,
+            "critical": {
+                "chance": 0.45,
+                "damage": 2.5
+            }
+        },
+        "skills": {
+            "0": {
+                "damage": 647,
+                "damagetype": "physical",
+                "cooldown": 5
+            },
+            "1": {
+                "damage": 140,
+                "damagetype": "magical",
+                "cooldown": 5
+            }
+        },
+        "effects": [],
+        "canCast": true,
+        "canAttack": true,
+        "canMove": true
     },
     "tank": {
-        "health": 4100,
-        "healthregen": 53,
-        "mana": 1000,
-        "manaregen": 23,
-        "attackdamage": 110,
-        "attackspeed": 0.8,
-        "armor": 325,
-        "magicresistance": 135,
-        "movementspeed": 415,
-        "tenacity": 0.35,
-        "flatarmorpen": 0,
-        "percentarmorpen": 0,
-        "abilitypower": 0,
-        "flatmagicpen": 0,
-        "percentmagicpen": 0,
-        "physicaldps": 0,
-        "magicaldps": 200,
-        "lifesteal": 0,
-        "spellvamp": 0,
-        "cdr": 0.2
+        "stats": {
+            "level": 18,
+            "health": {
+                "base": 390,
+                "perlevel": 80,
+                "flatbonus": 70,
+                "percentbonus": 0,
+                "current": 1900,
+                "total": 1900
+            },
+            "healthregen": {
+                "base": 4.75,
+                "perlevel": 0.55,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 14.65
+            },
+            "mana": {
+                "base": 255,
+                "perlevel": 35,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 885,
+                "total": 885
+            },
+            "manaregen": {
+                "base": 6.5,
+                "perlevel": 0.55,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 16.4
+            },
+            "attackdamage": {
+                "base": 47,
+                "perlevel": 3,
+                "flatbonus": 127,
+                "percentbonus": 0.1,
+                "current": 250.8
+            },
+            "attackspeed": {
+                "base": 0.625,
+                "perlevel": 0.035,
+                "percentbonus": 0.65,
+                "current": 1.425
+            },
+            "attackrange": {
+                "base": 550,
+                "flatbonus": 0,
+                "current": 0
+            },
+            "armor": {
+                "base": 17,
+                "perlevel": 3.5,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 80
+            },
+            "magicresistance": {
+                "base": 30,
+                "perlevel": 0,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 30
+            },
+            "movementspeed": {
+                "base": 325,
+                "perlevel": 0,
+                "flatbonus": 45,
+                "percentbonus": 0.06,
+                "current": 392.2
+            },
+            "tenacity": 0,
+            "armorpenetration": {
+                "flat": 0,
+                "percent": 0.35
+            },
+            "abilitypower": {
+                "base": 0,
+                "perlevel": 0,
+                "flatbonus": 0,
+                "percentbonus": 0,
+                "current": 0
+            },
+            "magicpenetration": {
+                "flat": 0,
+                "percent": 0
+            },
+            "lifesteal": 0.03,
+            "spellvamp": 0,
+            "cdr": 0,
+            "critical": {
+                "chance": 0.45,
+                "damage": 2.5
+            }
+        },
+        "skills": {
+            "0": {
+                "damage": 647,
+                "damagetype": "physical",
+                "cooldown": 5
+            },
+            "1": {
+                "damage": 140,
+                "damagetype": "magical",
+                "cooldown": 5
+            }
+        },
+        "effects": [],
+        "canCast": true,
+        "canAttack": true,
+        "canMove": true
     }
 }
+
