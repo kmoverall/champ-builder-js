@@ -17,7 +17,8 @@ var EVENTS = {
     WAS_ATTACKED: 1,
     USED_SKILL: 2,
     HIT_BY_SKILL: 3,
-    HIT_BY_PROJECTILE: 4
+    DEALT_DAMAGE: 4,
+    TOOK_DAMAGE: 5
 }
 
 var DAMAGE_TYPES = {
@@ -179,6 +180,98 @@ var Champion = {
         cantAttack: 0,
         cantCast: 0,
         slows: {}
+    },
+    attacktimer: 0,
+
+    takeDamage: function(damage, type, source) {
+        //Triggers effects based on current damage source
+        switch(source) {
+            case DAMAGE_SOURCE.AUTOATTACK:
+                for(var effect in this.effects) {
+                    if (this.effects.hasOwnProperty(effect)) {
+                        this.effects[effect].eventTriggered(EVENTS.WAS_ATTACKED);
+                        this.effects[effect].eventTriggered(EVENTS.TOOK_DAMAGE);
+                    }
+                }
+                break;
+            case DAMAGE_SOURCE.SKILL:
+                for(var effect in this.effects) {
+                    if (this.effects.hasOwnProperty(effect)) {
+                        this.effects[effect].eventTriggered(EVENTS.HIT_BY_SKILL);
+                        this.effects[effect].eventTriggered(EVENTS.TOOK_DAMAGE);
+                    }
+                }
+                break;
+            case DAMAGE_SOURCE.OTHER:
+                for(var effect in this.effects) {
+                    if (this.effects.hasOwnProperty(effect)) {
+                        this.effects[effect].eventTriggered(EVENTS.TOOK_DAMAGE);
+                    }
+                }
+                break;
+        }
+
+        //Reduces damage taken based on source and damage type
+        switch(type) {
+            case DAMAGE_TYPES.PHYSICAL:
+                //apply armor
+                effective_armor = this.stats.armor.current * (1 - Champion.stats.armorpenetration.percent) - Champion.stats.armorpenetration.flat;
+                if (effective_armor >= 0) {
+                    damage *= 100 / (100 + effective_armor);
+                }
+                else {
+                    damage *= 2 - 100 / (100 - effective_armor)
+                }
+
+                //apply non-resistance damage reduction/amplification
+                if(source = DAMAGE_SOURCE.AUTOATTACK) {
+                    damage = damage * (1 - this.damagereduction.auto.percent) * (1 - this.daamgereduction.physical.percent);
+                    damage = damage - this.damagereduction.auto.flat - this.damagereduction.physical.flat;
+
+                }
+                else {
+                    damage *= 1-this.damagereduction.physical.percent;
+                    damage -= this.damagereduction.physical.flat;
+                }
+                break;
+
+            case DAMAGE_TYPES.MAGIC:
+                //apply magic resistance
+                effective_mr = this.stats.magicresistance.current * (1 - Champion.stats.magicpenetration.percent) - Champion.stats.magicpenetration.flat;
+                if (effective_armor >= 0) {
+                    damage *= 100 / (100 + effective_armor);
+                }
+                else {
+                    damage *= 2 - 100 / (100 - effective_armor)
+                }
+
+                //apply non-resistance damage reduction/amplification
+                damage *= 1-this.damagereduction.magic.percent;
+                damage -= this.damagereduction.magic.flat;
+                break;
+
+            case DAMAGE_TYPES.TRUE:
+                break;
+        }
+
+        //Apply damage to current health
+        this.stats.health.current -= damage;
+    },
+
+    autoAttack: function() {
+        var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance*(this.stats.critical.damage-1));
+        damage = Target.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
+        //Trigger all effects that occur on autoattacks
+        for(var effect in this.effects) {
+            if (this.effects.hasOwnProperty(effect)) {
+                this.effects[effect].eventTriggered(EVENTS.ATTACKED);
+                this.effects[effect].eventTriggered(EVENTS.DEALT_DAMAGE);
+            }
+        }
+        this.stats.health.current = Math.min(this.stats.health.current + damage*this.stats.lifesteal, this.stats.health.total);
+
+        //reset attack timer
+        this.attacktimer = 1 / this.stats.attackspeed.current;
     },
 
     initialize: function() {

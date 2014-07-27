@@ -99,7 +99,6 @@
                 "chance": 0.45,
                 "damage": 2.5
             },
-            //Describes damage reductions outside of resistances
             "damagereduction": {
                 "auto": {
                     "flat": 0,
@@ -228,7 +227,6 @@
                 "chance": 0,
                 "damage": 2
             },
-            //Describes damage reductions outside of resistances
             "damagereduction": {
                 "auto": {
                     "flat": 0,
@@ -362,7 +360,6 @@
                 "chance": 0,
                 "damage": 2
             },
-            //Describes damage reductions outside of resistances
             "damagereduction": {
                 "auto": {
                     "flat": 0,
@@ -496,7 +493,6 @@
                 "chance": 0.45,
                 "damage": 2.5
             },
-            //Describes damage reductions outside of resistances
             "damagereduction": {
                 "auto": {
                     "flat": 0,
@@ -625,7 +621,6 @@
                 "chance": 0.45,
                 "damage": 2.5
             },
-            //Describes damage reductions outside of resistances
             "damagereduction": {
                 "auto": {
                     "flat": 0,
