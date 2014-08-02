@@ -4,25 +4,26 @@
 
 //I *could* use flot for this, but sometimes the journey is its own reward
 
-var margin = 50;
-
-//Initializes the graph
 $(function() {
+    //Initializes the graph
     var graphs = Array.prototype.slice.call(document.getElementsByClassName("graph"), 0);
     for(var i = 0; i < graphs.length; i++) {
         drawAxes(graphs[i]);
     }
 
+    //Runs the simulation and graphs the resultant data
     $("#simulateButton").click(function () {
-        $.getScript( "js/simulation.js", function( data, textStatus, jqxhr ) {
             console.log("Simulating");
-            var results = simulate();
-            for(var i = 0; i < graphs.length; i++) {
-                graphs[i].width = graphs[i].width;
-                drawGraph(results[graphs[i].id], graphs[i]);
-                drawAxes(graphs[i]);
-            }
-        });
+            $.getScript( Champion.scriptlocation, function( data, textStatus, jqxhr ) {
+                console.log("loaded champ scripts: " + Champion.scriptlocation);
+
+                var results = simulate();
+                for (var i = 0; i < graphs.length; i++) {
+                    graphs[i].width = graphs[i].width;
+                    drawGraph(results[graphs[i].id], graphs[i]);
+                    drawAxes(graphs[i]);
+                }
+            });
     });
 });
 
@@ -30,10 +31,10 @@ $(function() {
 function drawAxes(g) {
     var ctx = g.getContext("2d");
     ctx.beginPath();
-    ctx.moveTo(margin, g.height-margin);
-    ctx.lineTo(g.width-margin, g.height-margin);
-    ctx.moveTo(margin, g.height-margin);
-    ctx.lineTo(margin, margin);
+    ctx.moveTo(MARGIN, g.height-MARGIN);
+    ctx.lineTo(g.width-MARGIN, g.height-MARGIN);
+    ctx.moveTo(MARGIN, g.height-MARGIN);
+    ctx.lineTo(MARGIN, MARGIN);
     ctx.strokeStyle = "#ddd";
     ctx.lineWidth = 1;
     ctx.stroke();
@@ -43,7 +44,7 @@ function drawAxes(g) {
     ctx.font = "bold 20px sans-serif";
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#ddd";
-    ctx.fillText(xlbl, g.width/2, g.height-margin/2);
+    ctx.fillText(xlbl, g.width/2, g.height-MARGIN/2);
 
     var ylbl = $(g).data("ylabel");
     ctx.textAlign = "center";
@@ -51,7 +52,7 @@ function drawAxes(g) {
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#ddd";
     ctx.save();
-    ctx.translate(margin/2, g.height/2);
+    ctx.translate(MARGIN/2, g.height/2);
     ctx.rotate(-Math.PI/2);
     ctx.fillText(ylbl, 0, 0);
     ctx.restore();
@@ -61,9 +62,10 @@ function drawAxes(g) {
 function drawGraph(data, g) {
     var ctx = g.getContext("2d");
     ctx.beginPath();
-    ctx.moveTo(margin, g.height-margin);
-    for(var i = 0; i < data.length; i++) {
-        ctx.lineTo(margin + (data[i][0]/20)*(g.width-margin*2), g.height-margin - (data[i][1]/100)*(g.height-margin*2));
+    //Moves to initial data point
+    ctx.moveTo(MARGIN + (data[0][0]/100)*(g.width-MARGIN*2), g.height-MARGIN - (data[0][1]/100)*(g.height-MARGIN*2));
+    for(var i = 1; i < data.length; i++) {
+        ctx.lineTo(MARGIN + (data[i][0]/100)*(g.width-MARGIN*2), g.height-MARGIN - (data[i][1]/100)*(g.height-MARGIN*2));
     }
     ctx.strokeStyle = "#f00";
     ctx.lineWidth = 4;

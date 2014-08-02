@@ -2,36 +2,7 @@
  * Created by kevinoverall on 7/24/14.
  */
 
-//Champion related constants
-var CHAMP_ID_MAP = {
-    aatrox: 266
-};
 
-var STAT_LINK_MAP = {
-    bonusattackdamage: ["attackdamage", "bonus"]
-}
-
-//Describes interactions between target and champion that occur, for reference by effects
-var EVENTS = {
-    ATTACKED: 0,
-    WAS_ATTACKED: 1,
-    USED_SKILL: 2,
-    HIT_BY_SKILL: 3,
-    DEALT_DAMAGE: 4,
-    TOOK_DAMAGE: 5
-}
-
-var DAMAGE_TYPES = {
-    PHYSICAL: 0,
-    MAGIC: 1,
-    TRUE: 2
-}
-
-var DAMAGE_SOURCE = {
-    AUTOATTACK: 0,
-    SKILL: 1,
-    OTHER: 2
-}
 
 //Loading functions
 $(function() {
@@ -181,6 +152,7 @@ var Champion = {
         cantCast: 0,
         slows: {}
     },
+    targetable: true,
     attacktimer: 0,
 
     takeDamage: function(damage, type, source) {
@@ -225,14 +197,16 @@ var Champion = {
 
                 //apply non-resistance damage reduction/amplification
                 if(source = DAMAGE_SOURCE.AUTOATTACK) {
-                    damage = damage * (1 - this.damagereduction.auto.percent) * (1 - this.daamgereduction.physical.percent);
-                    damage = damage - this.damagereduction.auto.flat - this.damagereduction.physical.flat;
+                    damage = damage * (1 - this.stats.damagereduction.auto.percent) * (1 - this.daamgereduction.physical.percent);
+                    damage = damage - this.stats.damagereduction.auto.flat - this.stats.damagereduction.physical.flat;
 
                 }
                 else {
-                    damage *= 1-this.damagereduction.physical.percent;
-                    damage -= this.damagereduction.physical.flat;
+                    damage *= 1-this.stats.damagereduction.physical.percent;
+                    damage -= this.stats.damagereduction.physical.flat;
                 }
+
+                Log += "\t" + this.data.name + " takes " + damage + " physical damage\n";
                 break;
 
             case DAMAGE_TYPES.MAGIC:
@@ -246,19 +220,25 @@ var Champion = {
                 }
 
                 //apply non-resistance damage reduction/amplification
-                damage *= 1-this.damagereduction.magic.percent;
-                damage -= this.damagereduction.magic.flat;
+                damage *= 1-this.stats.damagereduction.magic.percent;
+                damage -= this.stats.damagereduction.magic.flat;
+
+                Log += "\t" + this.data.name + " takes " + damage + " magic damage\n";
                 break;
 
             case DAMAGE_TYPES.TRUE:
+                Log += "\t" + this.data.name + " takes " + damage + " true damage\n";
                 break;
         }
 
         //Apply damage to current health
         this.stats.health.current -= damage;
+        return damage;
     },
 
     autoAttack: function() {
+        Log += "\t" + this.data.name + " attacks\n";
+
         var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance*(this.stats.critical.damage-1));
         damage = Target.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
         //Trigger all effects that occur on autoattacks

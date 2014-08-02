@@ -2,6 +2,36 @@
  * Created by kevinoverall on 5/15/14.
  */
 
+$(function() {
+    setToPreset("marksman");
+
+    $(".editPreset").click(function () {
+        setToPreset(event.target.id);
+    });
+});
+
+function setToPreset(preset) {
+    console.log("Setting Preset to "+preset);
+    var jqxhr = $.getJSON("js/targetpresets.json", function(preset_data){
+        Target.stats = preset_data[preset]["stats"];
+        Target.skills = preset_data[preset]["skills"];
+
+        //Calculate stat panel info
+        document.getElementById("physicalDPS").innerHTML = String(Math.floor(Target.stats.attackdamage.current * Target.stats.attackspeed.current * (1+Target.stats.critical.chance * Target.stats.critical.damage)
+            + Target.skills[0].damage / Target.skills[0].cooldown));
+        document.getElementById("magicalDPS").innerHTML = String(Math.floor(Target.skills[1].damage / Target.skills[1].cooldown));
+        document.getElementById("physicalHealth").innerHTML = String(Math.floor(Target.stats.health.total * ((100+Target.stats.armor.current)/100)));
+        document.getElementById("magicalHealth").innerHTML = String(Math.floor(Target.stats.health.total * ((100+Target.stats.magicresistance.current)/100)));
+    })
+        .fail(function() {
+            alert( "Error retrieving data from Champ Builder server. Please try again later" );
+        });
+
+    jqxhr.complete(function() {
+
+    });
+}
+
 var Target = {
     stats: {
         level: 18,
@@ -127,6 +157,7 @@ var Target = {
         cantCast: 0,
         slows: {}
     },
+    targetable: true,
     attacktimer: 0,
 
     takeDamage: function(damage, type, source) {
@@ -171,14 +202,16 @@ var Target = {
 
                 //apply non-resistance damage reduction/amplification
                 if(source = DAMAGE_SOURCE.AUTOATTACK) {
-                    damage = damage * (1 - this.damagereduction.auto.percent) * (1 - this.daamgereduction.physical.percent);
-                    damage = damage - this.damagereduction.auto.flat - this.damagereduction.physical.flat;
+                    damage = damage * (1 - this.stats.damagereduction.auto.percent) * (1 - this.daamgereduction.physical.percent);
+                    damage = damage - this.stats.damagereduction.auto.flat - this.stats.damagereduction.physical.flat;
 
                 }
                 else {
-                    damage *= 1-this.damagereduction.physical.percent;
-                    damage -= this.damagereduction.physical.flat;
+                    damage *= 1-this.stats.damagereduction.physical.percent;
+                    damage -= this.stats.damagereduction.physical.flat;
                 }
+
+                Log += "\tTarget takes " + damage + " physical damage\n";
                 break;
 
             case DAMAGE_TYPES.MAGIC:
@@ -192,11 +225,14 @@ var Target = {
                 }
 
                 //apply non-resistance damage reduction/amplification
-                damage *= 1-this.damagereduction.magic.percent;
-                damage -= this.damagereduction.magic.flat;
+                damage *= 1-this.stats.damagereduction.magic.percent;
+                damage -= this.stats.damagereduction.magic.flat;
+
+                Log += "\tTarget takes " + damage + " magic damage\n";
                 break;
 
             case DAMAGE_TYPES.TRUE:
+                Log += "\tTarget takes " + damage + " true damage\n";
                 break;
         }
 
@@ -206,6 +242,8 @@ var Target = {
     },
 
     autoAttack: function() {
+        Log += "\tTarget attacks\n"
+
         var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance*(this.stats.critical.damage-1));
         damage = Champion.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
         //Trigger all effects that occur on autoattacks
@@ -215,39 +253,58 @@ var Target = {
                 this.effects[effect].eventTriggered(EVENTS.DEALT_DAMAGE);
             }
         }
+
         this.stats.health.current = Math.min(this.stats.health.current + damage*this.stats.lifesteal, this.stats.health.total);
+
 
         //reset attack timer
         this.attacktimer = 1 / this.stats.attackspeed.current;
+    },
+
+    calculateStats: function() {
+        oldHealth = this.stats.health.total;
+        this.stats.health.total = (this.stats.health.base+ this.stats.health.perlevel*this.stats.level + this.stats.health.flatbonus)*(1+this.stats.health.percentbonus);
+        this.stats.health.bonus = this.stats.health.flatbonus*(1+this.stats.health.percentbonus) + (this.stats.health.base + this.stats.health.perlevel*this.stats.level + this.stats.health.flatbonus)*this.stats.health.percentbonus;
+        this.stats.healthregen.current = (this.stats.healthregen.base + this.stats.healthregen.perlevel*this.stats.level + this.stats.healthregen.flatbonus)*(1+this.stats.healthregen.percentbonus);
+
+        oldMana = this.stats.mana.total;
+        this.stats.mana.total = (this.stats.mana.base + this.stats.mana.perlevel*this.stats.level + this.stats.mana.flatbonus)*(1+this.stats.mana.percentbonus);
+        this.stats.manaregen.current = (this.stats.manaregen.base + this.stats.manaregen.perlevel*this.stats.level + this.stats.manaregen.flatbonus)*(1+this.stats.manaregen.percentbonus);
+
+        this.stats.attackdamage.current = (this.stats.attackdamage.base + this.stats.attackdamage.perlevel*this.stats.level + this.stats.attackdamage.flatbonus)*(1+this.stats.attackdamage.percentbonus);
+        this.stats.attackdamage.bonus = this.stats.attackdamage.flatbonus*(1+this.stats.attackdamage.percentbonus) + (this.stats.attackdamage.base + this.stats.attackdamage.perlevel*this.stats.level + this.stats.attackdamage.flatbonus)*this.stats.attackdamage.percentbonus;
+        this.stats.attackspeed.current = this.stats.attackspeed.base*(1+this.stats.attackspeed.perlevel*this.stats.level+this.stats.attackspeed.percentbonus);
+        //Apply attack speed cap
+        if(this.stats.attackspeed.current > 2.5) {
+            this.stats.attackspeed.current = 2.5;
+        }
+        this.stats.attackrange.current = this.stats.attackrange.base + this.stats.attackrange.flatbonus;
+
+        this.stats.armor.current = (this.stats.armor.base + this.stats.armor.perlevel*this.stats.level + this.stats.armor.flatbonus)*(1+this.stats.armor.percentbonus);
+        this.stats.armor.bonus = this.stats.armor.flatbonus*(1+this.stats.armor.percentbonus) + (this.stats.armor.base + this.stats.armor.perlevel*this.stats.level + this.stats.armor.flatbonus)*this.stats.armor.percentbonus;
+        this.stats.magicresistance.current = (this.stats.magicresistance.base+ this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*(1+this.stats.magicresistance.percentbonus);
+        this.stats.magicresistance.bonus = this.stats.magicresistance.flatbonus*(1+this.stats.magicresistance.percentbonus) + (this.stats.magicresistance.base + this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*this.stats.magicresistance.percentbonus;
+
+        this.stats.movementspeed.current = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
+        //Apply soft movespeed caps
+        if (this.stats.movementspeed.current > 490) {
+            this.stats.movementspeed.current = this.stats.movementspeed.current*0.5 + 230;
+        }
+        else if (this.stats.movementspeed.current > 415) {
+            this.stats.movementspeed.current = this.stats.movementspeed.current*0.8 + 83;
+        }
+        else if (this.stats.movementspeed.current < 220) {
+            this.stats.movementspeed.current = this.stats.movementspeed.current*0.5 + 110;
+        }
+
+        this.stats.abilitypower.current = (this.stats.abilitypower.base+ this.stats.abilitypower.perlevel*this.stats.level + this.stats.abilitypower.flatbonus)*(1+this.stats.abilitypower.percentbonus);
+
+        this.stats.health.current += Math.max(this.stats.health.total - oldHealth, 0);
+        this.stats.mana.current += Math.max(this.stats.mana.total - oldMana, 0);
     }
+
+    
 };
 
-$(function() {
-    setToPreset("marksman");
 
-    $(".editPreset").click(function () {
-        setToPreset(event.target.id);
-    });
-});
 
-function setToPreset(preset) {
-    console.log("Setting Preset to "+preset);
-    var jqxhr = $.getJSON("js/targetpresets.json", function(data){
-        Target.stats = data[preset]["stats"];
-        Target.skills = data[preset]["skills"];
-
-        //Calculate stat panel info
-        document.getElementById("physicalDPS").innerHTML = String(Math.floor(Target["stats"]["attackdamage"]["current"]*Target["stats"]["attackspeed"]["current"]*(1+Target["stats"]["critical"]["chance"]*Target["stats"]["critical"]["damage"])
-                                                                    + Target["skills"]["0"]["damage"]/Target["skills"]["0"]["cooldown"]));
-        document.getElementById("magicalDPS").innerHTML = String(Math.floor(Target["skills"]["1"]["damage"]/Target["skills"]["1"]["cooldown"]));
-        document.getElementById("physicalHealth").innerHTML = String(Math.floor(Target["stats"]["health"]["total"]*((100+Target["stats"]["armor"]["current"])/100)));
-        document.getElementById("magicalHealth").innerHTML = String(Math.floor(Target["stats"]["health"]["total"]*((100+Target["stats"]["magicresistance"]["current"])/100)));
-    })
-        .fail(function() {
-            alert( "Error retrieving data from Champ Builder server. Please try again later" );
-        });
-
-    jqxhr.complete(function() {
-
-    });
-}
