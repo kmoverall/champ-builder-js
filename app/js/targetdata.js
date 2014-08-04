@@ -157,6 +157,11 @@ var Target = {
         cantCast: 0,
         slows: {}
     },
+    shield: {
+        standard: 0,
+        physical: 0,
+        magic: 0
+    },
     targetable: true,
     attacktimer: 0,
 
