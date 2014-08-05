@@ -157,6 +157,7 @@ var Champion = {
         physical: 0,
         magic: 0
     },
+    healingreduced: false,
     targetable: true,
     attacktimer: 0,
 
@@ -281,10 +282,19 @@ var Champion = {
                 this.effects[effect].eventTriggered(EVENTS.DEALT_DAMAGE);
             }
         }
-        this.stats.health.current = Math.min(this.stats.health.current + damage*this.stats.lifesteal, this.stats.health.total);
+        this.heal(damage*this.stats.lifesteal);
 
         //reset attack timer
         this.attacktimer = 1 / this.stats.attackspeed.current;
+    },
+
+    heal: function(amount) {
+        if (healingreduced) {
+            amount = amount / 2;
+        }
+
+        this.stats.health.current = Math.min(this.stats.health.current + amount, this.stats.health.total);
+        return amount;
     },
 
     initialize: function() {

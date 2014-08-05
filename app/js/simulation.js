@@ -37,6 +37,10 @@ function simulate() {
             escape: false
         };
 
+        //--------------------------------------------
+        //Combat Processing
+        //--------------------------------------------
+
         //Champion auto attack
         Champion.attacktimer -= TIME_STEP;
         if(Champion.attacktimer <= 0 && Target.targetable) {
@@ -63,6 +67,11 @@ function simulate() {
         } else if (Champion.stats.health.current < 0) {
             Champion.stats.health.current = 0;
         }
+
+
+        //--------------------------------------------
+        //Post-Combat Processsing
+        //--------------------------------------------
 
         //Push graph data to results arrays
         if (will_plot["damage"]) {
