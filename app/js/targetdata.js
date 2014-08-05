@@ -241,8 +241,36 @@ var Target = {
                 break;
         }
 
+        //Apply damage to shields
+        var remaining_damage = damage;
+        if (type == DAMAGE_TYPES.PHYSICAL) {
+            if (remaining_damage > this.stats.shield.physical) {
+                remaining_damage -= this.stats.shield.physical;
+                this.stats.shield.physical = 0;
+            } else {
+                remaining_damage = 0;
+                this.stats.shield.physical -= damage;
+            }
+        } else if (type == DAMAGE_TYPES.MAGIC) {
+            if (remaining_damage > this.stats.shield.magic) {
+                remaining_damage -= this.stats.shield.magic;
+                this.stats.shield.magic = 0;
+            } else {
+                remaining_damage = 0;
+                this.stats.shield.magic -= damage;
+            }
+        }
+
+        if (remaining_damage > this.stats.shield.standard) {
+            remaining_damage -= this.stats.shield.standard;
+            this.stats.shield.standard = 0;
+        } else {
+            this.stats.shield.standard -= remaining_damage;
+            remaining_damage = 0;
+        }
+
         //Apply damage to current health
-        this.stats.health.current -= damage;
+        this.stats.health.current -= remaining_damage;
         return damage;
     },
 
