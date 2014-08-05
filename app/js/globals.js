@@ -3,3 +3,4 @@
  */
 
 var Log = "";
+var Distance = 0;

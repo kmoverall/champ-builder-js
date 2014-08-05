@@ -154,9 +154,10 @@ var Target = {
     crowdcontrol: {
         cantMove: 0,
         cantAttack: 0,
-        cantCast: 0,
-        slows: {}
+        cantCast: 0
+
     },
+    slows: [],
     shield: {
         standard: 0,
         physical: 0,
@@ -276,22 +277,24 @@ var Target = {
     },
 
     autoAttack: function() {
-        Log += "\tTarget attacks\n";
+        if (Distance <= this.stats.attackrange.current && this.crowdcontrol.cantAttack <= 0 && Champion.targetable) {
+            Log += "\tTarget attacks\n";
 
-        var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance*(this.stats.critical.damage-1));
-        damage = Champion.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
-        //Trigger all effects that occur on autoattacks
-        for(var effect in this.effects) {
-            if (this.effects.hasOwnProperty(effect)) {
-                this.effects[effect].eventTriggered(EVENTS.ATTACKED);
-                this.effects[effect].eventTriggered(EVENTS.DEALT_DAMAGE);
+            var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance * (this.stats.critical.damage - 1));
+            damage = Champion.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
+            //Trigger all effects that occur on autoattacks
+            for (var effect in this.effects) {
+                if (this.effects.hasOwnProperty(effect)) {
+                    this.effects[effect].eventTriggered(EVENTS.ATTACKED);
+                    this.effects[effect].eventTriggered(EVENTS.DEALT_DAMAGE);
+                }
             }
+
+            this.heal(damage * this.stats.lifesteal);
+
+            //reset attack timer
+            this.attacktimer = 1 / this.stats.attackspeed.current;
         }
-
-        this.heal(damage*this.stats.lifesteal);
-
-        //reset attack timer
-        this.attacktimer = 1 / this.stats.attackspeed.current;
     },
 
     heal: function(amount) {

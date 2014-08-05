@@ -18,7 +18,8 @@ $(function() {
             Target.reset();
             Champion.reset();
 
-            Scripts.load()
+            Scripts.load();
+
             console.log("loaded champ scripts: " + Champion.scriptlocation);
 
             var results = simulate();

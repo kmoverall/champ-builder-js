@@ -43,22 +43,34 @@ function simulate() {
 
         //Champion auto attack
         Champion.attacktimer -= TIME_STEP;
-        if(Champion.attacktimer <= 0 && Target.targetable) {
+        if(Champion.attacktimer <= 0 && Target.targetable && Champion.crowdcontrol.cantAttack <= 0) {
             Champion.autoAttack();
             will_plot["damage"] = true;
         }
 
         //Target auto attack
         Target.attacktimer -= TIME_STEP;
-        if(Target.attacktimer <= 0 && Champion.targetable) {
+        if(Target.attacktimer <= 0 && Champion.targetable && Target.crowdcontrol.cantAttack <= 0) {
             Target.autoAttack();
             will_plot["durability"] = true;
         }
 
-        // Apply regeneration every 0.5 seconds
-        // Health must be divided by 10, as it is stored as per 5s
-        // < TIME_STEP / 2 instead of == 0 accommodates for floating point errors
-        if((time*2) % 1 < TIME_STEP / 2) {
+
+        //Champion skills
+        for (var skill in Champion.skills) {
+            if (Champion.skills.hasOwnProperty(skill)) {
+                Champion.skills[skill].cdtimer -= TIME_STEP;
+                if(Champion.skills[skill].cdtimer <=0 && Target.targetable) {
+                    Champion.skills[skill].cast();
+                    will_plot["damage"] = true;
+                    will_plot["durability"] = true;
+                }
+            }
+        }
+
+        // Apply regeneration every 0.5 seconds. Method of determining this is weird due to float rounding errors
+        // Regen must be divided by 10, as it is stored as per 5s
+        if(time % 0.5 > (time + TIME_STEP)% 0.5) {
             Target.heal(Target.stats.healthregen.current / 10);
             Target.stats.mana.current += Target.stats.manaregen.current / 10;
 
@@ -97,6 +109,30 @@ function simulate() {
         }
         else if (Champion.stats.mana.current < 0) {
             Champion.stats.mana.current = 0;
+        }
+
+        //Reduce CC duration
+        for (var cc in Target.crowdcontrol) {
+            if (Target.crowdcontrol.hasOwnProperty(cc)) {
+                Target.crowdcontrol[cc] -= TIME_STEP;
+                if(Target.crowdcontrol[cc] <= 0) {
+                    Target.crowdcontrol[cc] = 0;
+                }
+            }
+        }
+        for (var cc in Champion.crowdcontrol) {
+            if (Champion.crowdcontrol.hasOwnProperty(cc)) {
+                Champion.crowdcontrol[cc] -= TIME_STEP;
+                if(Champion.crowdcontrol[cc] <= 0) {
+                    Champion.crowdcontrol[cc] = 0;
+                }
+            }
+
+        }
+
+        //Ensure that Distance between combatants is no less than 0
+        if (Distance < 0) {
+            Distance = 0;
         }
 
         //Push graph data to results arrays
