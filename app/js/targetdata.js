@@ -245,28 +245,28 @@ var Target = {
         //Apply damage to shields
         var remaining_damage = damage;
         if (type == DAMAGE_TYPES.PHYSICAL) {
-            if (remaining_damage > this.stats.shield.physical) {
-                remaining_damage -= this.stats.shield.physical;
-                this.stats.shield.physical = 0;
+            if (remaining_damage > this.shield.physical) {
+                remaining_damage -= this.shield.physical;
+                this.shield.physical = 0;
             } else {
                 remaining_damage = 0;
-                this.stats.shield.physical -= damage;
+                this.shield.physical -= damage;
             }
         } else if (type == DAMAGE_TYPES.MAGIC) {
-            if (remaining_damage > this.stats.shield.magic) {
-                remaining_damage -= this.stats.shield.magic;
-                this.stats.shield.magic = 0;
+            if (remaining_damage > this.shield.magic) {
+                remaining_damage -= this.shield.magic;
+                this.shield.magic = 0;
             } else {
                 remaining_damage = 0;
-                this.stats.shield.magic -= damage;
+                this.shield.magic -= damage;
             }
         }
 
-        if (remaining_damage > this.stats.shield.standard) {
-            remaining_damage -= this.stats.shield.standard;
-            this.stats.shield.standard = 0;
+        if (remaining_damage > this.shield.standard) {
+            remaining_damage -= this.shield.standard;
+            this.shield.standard = 0;
         } else {
-            this.stats.shield.standard -= remaining_damage;
+            this.shield.standard -= remaining_damage;
             remaining_damage = 0;
         }
 
@@ -276,7 +276,7 @@ var Target = {
     },
 
     autoAttack: function() {
-        Log += "\tTarget attacks\n"
+        Log += "\tTarget attacks\n";
 
         var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance*(this.stats.critical.damage-1));
         damage = Champion.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
@@ -295,11 +295,13 @@ var Target = {
     },
 
     heal: function(amount) {
-        if (healingreduced) {
+        if (this.healingreduced) {
             amount = amount / 2;
         }
 
         this.stats.health.current = Math.min(this.stats.health.current + amount, this.stats.health.total);
+
+        Log += "\tTarget heals for "+amount+ "\n";
         return amount;
     },
 
@@ -343,6 +345,26 @@ var Target = {
 
         this.stats.health.current += Math.max(this.stats.health.total - oldHealth, 0);
         this.stats.mana.current += Math.max(this.stats.mana.total - oldMana, 0);
+    },
+
+    reset: function() {
+        for(var effect in this.effects) {
+            if (this.effects.hasOwnProperty(effect)) {
+                this.effects[effect].remove();
+            }
+        }
+        this.effects = {};
+        this.crowdcontrol.cantMove = 0;
+        this.crowdcontrol.cantAttack = 0;
+        this.crowdcontrol.cantCast = 0;
+        this.slows = {};
+        this.healingreduced = false;
+        this.targetable = true;
+        this.attacktimer = 0;
+
+        this.calculateStats();
+        this.stats.health.current = this.stats.health.total;
+        this.stats.mana.current = this.stats.mana.total;
     }
 
     

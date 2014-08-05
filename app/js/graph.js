@@ -13,17 +13,21 @@ $(function() {
 
     //Runs the simulation and graphs the resultant data
     $("#simulateButton").click(function () {
-            console.log("Simulating");
-            $.getScript( Champion.scriptlocation, function( data, textStatus, jqxhr ) {
-                console.log("loaded champ scripts: " + Champion.scriptlocation);
+        console.log("Simulating");
+        $.getScript( Champion.scriptlocation, function( data, textStatus, jqxhr ) {
+            Target.reset();
+            Champion.reset();
 
-                var results = simulate();
-                for (var i = 0; i < graphs.length; i++) {
-                    graphs[i].width = graphs[i].width;
-                    drawGraph(results[graphs[i].id], graphs[i]);
-                    drawAxes(graphs[i]);
-                }
-            });
+            Scripts.load()
+            console.log("loaded champ scripts: " + Champion.scriptlocation);
+
+            var results = simulate();
+            for (var i = 0; i < graphs.length; i++) {
+                graphs[i].width = graphs[i].width;
+                drawGraph(results[graphs[i].id], graphs[i]);
+                drawAxes(graphs[i]);
+            }
+        });
     });
 });
 

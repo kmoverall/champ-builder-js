@@ -3,9 +3,10 @@
  */
 var Scripts = {
     load: function() {
-        Champion.manaless = true;
+        /*Champion.manaless = true;
         Champion.effects.BloodWellRevive = this.BloodWellRevive;
         Champion.effects.BloodWell = this.BloodWell;
+        */
     },
     Q: {
         rank: 4,
@@ -25,19 +26,34 @@ var Scripts = {
         cast: function() {}
     },
     BloodWellRevive: {
-
+        apply: function() {},
+        tick: function() {},
+        eventTriggered: function() {},
+        remove: function() {}
     },
     BloodWell: {
-
+        apply: function() {},
+        tick: function() {},
+        eventTriggered: function() {},
+        remove: function() {}
     },
     BloodThirst: {
-
+        apply: function() {},
+        tick: function() {},
+        eventTriggered: function() {},
+        remove: function() {}
     },
     BloodPrice: {
-
+        apply: function() {},
+        tick: function() {},
+        eventTriggered: function() {},
+        remove: function() {}
     },
     Massacre: {
-
+        apply: function() {},
+        tick: function() {},
+        eventTriggered: function() {},
+        remove: function() {}
     }
 
 }
