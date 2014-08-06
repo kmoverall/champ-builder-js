@@ -151,13 +151,13 @@ var Target = {
     skills: {},
     effects: {},
     //Crowd control is listed by restricted actions as the key and duration as the value
+    slows: [],
     crowdcontrol: {
         cantMove: 0,
         cantAttack: 0,
         cantCast: 0
 
     },
-    slows: [],
     shield: {
         standard: 0,
         physical: 0,

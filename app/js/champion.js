@@ -142,7 +142,7 @@ var Champion = {
         }
     },
     manaless: false,
-    skills: [],
+    skills: {},
     effects: {},
     //Crowd control is listed by restricted actions as the key and duration as the value
     //Slows are listed as an effect and a duration
@@ -151,7 +151,7 @@ var Champion = {
         cantAttack: 0,
         cantCast: 0
     },
-    slows: [],
+    slows: {},
     shield: {
         standard: 0,
         physical: 0,

@@ -24,6 +24,10 @@ function simulate() {
         escape: false
     };
 
+    //This is a stupid hack due to the slows arrays sometimes deciding that they didn't feel like being arrays when asked to do array things
+    Target.slows = [];
+    Champion.slows = [];
+
     for (var time = 0; time <= MAX_TIME; time += TIME_STEP) {
         Log += time+": ";
 
@@ -54,7 +58,6 @@ function simulate() {
             Target.autoAttack();
             will_plot["durability"] = true;
         }
-
 
         //Champion skills
         for (var skill in Champion.skills) {
@@ -128,6 +131,24 @@ function simulate() {
                 }
             }
 
+        }
+
+        //Reduce slow durations, needs to calculate and recalculate movespeeds based on slows coming and going
+        for (var slow in Target.slows) {
+            if (Target.slows.hasOwnProperty(slow)) {
+                Target.slows[slow].duration -= TIME_STEP;
+                if(Target.slows[slow].duration <= 0) {
+                    Target.slows.splice(slow, 1);
+                }
+            }
+        }
+        for (var slow in Champion.slows) {
+            if (Champion.slows.hasOwnProperty(slow)) {
+                Champion.slows[slow].duration -= TIME_STEP;
+                if(Champion.slows[slow].duration <= 0) {
+                    Champion.slows.splice(slow, 1);
+                }
+            }
         }
 
         //Ensure that Distance between combatants is no less than 0

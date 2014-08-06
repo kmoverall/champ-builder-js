@@ -29,7 +29,8 @@ STAT_LINK_MAP[...][1] is a modifier (total, bonus, etc.)
 Champion.stats[STAT_LINK_MAP[...][0]][STAT_LINK_MAP[...][1]] will point to appropriate stat
  */
 var STAT_LINK_MAP = {
-    bonusattackdamage: ["attackdamage", "bonus"]
+    bonusattackdamage: ["attackdamage", "bonus"],
+    spelldamage: ["abilitypower", "current"]
 }
 
 //Describes interactions between target and champion that occur, for reference by effects
