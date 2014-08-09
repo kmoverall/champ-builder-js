@@ -46,14 +46,12 @@ function simulate() {
         //--------------------------------------------
 
         //Champion auto attack
-        Champion.attacktimer -= TIME_STEP;
         if(Champion.attacktimer <= 0 && Target.targetable && Champion.crowdcontrol.cantAttack <= 0) {
             Champion.autoAttack();
             will_plot["damage"] = true;
         }
 
         //Target auto attack
-        Target.attacktimer -= TIME_STEP;
         if(Target.attacktimer <= 0 && Champion.targetable && Target.crowdcontrol.cantAttack <= 0) {
             Target.autoAttack();
             will_plot["durability"] = true;
@@ -62,7 +60,6 @@ function simulate() {
         //Champion skills
         for (var skill in Champion.skills) {
             if (Champion.skills.hasOwnProperty(skill)) {
-                Champion.skills[skill].cdtimer -= TIME_STEP;
                 if(Champion.skills[skill].cdtimer <=0 && Target.targetable) {
                     Champion.skills[skill].cast();
                     will_plot["damage"] = true;
@@ -84,72 +81,8 @@ function simulate() {
         //--------------------------------------------
         // Post-Combat Processsing
         //--------------------------------------------
-
-        //Ensure that Target and Champion health and mana is between 0 and max
-        if (Target.stats.health.current > Target.stats.health.total) {
-            Target.stats.health.current = Target.stats.health.total;
-        }
-        else if (Target.stats.health.current < 0) {
-            Target.stats.health.current = 0;
-        }
-
-        if (Target.stats.mana.current > Target.stats.mana.total) {
-            Target.stats.mana.current = Target.stats.mana.total;
-        }
-        else if (Target.stats.mana.current < 0) {
-            Target.stats.mana.current = 0;
-        }
-
-        if (Champion.stats.health.current > Champion.stats.health.total) {
-            Champion.stats.health.current = Champion.stats.health.total;
-        }
-        else if (Champion.stats.health.current < 0) {
-            Champion.stats.health.current = 0;
-        }
-
-        if (Champion.stats.mana.current > Champion.stats.mana.total) {
-            Champion.stats.mana.current = Champion.stats.mana.total;
-        }
-        else if (Champion.stats.mana.current < 0) {
-            Champion.stats.mana.current = 0;
-        }
-
-        //Reduce CC duration
-        for (var cc in Target.crowdcontrol) {
-            if (Target.crowdcontrol.hasOwnProperty(cc)) {
-                Target.crowdcontrol[cc] -= TIME_STEP;
-                if(Target.crowdcontrol[cc] <= 0) {
-                    Target.crowdcontrol[cc] = 0;
-                }
-            }
-        }
-        for (var cc in Champion.crowdcontrol) {
-            if (Champion.crowdcontrol.hasOwnProperty(cc)) {
-                Champion.crowdcontrol[cc] -= TIME_STEP;
-                if(Champion.crowdcontrol[cc] <= 0) {
-                    Champion.crowdcontrol[cc] = 0;
-                }
-            }
-
-        }
-
-        //Reduce slow durations, needs to calculate and recalculate movespeeds based on slows coming and going
-        for (var slow in Target.slows) {
-            if (Target.slows.hasOwnProperty(slow)) {
-                Target.slows[slow].duration -= TIME_STEP;
-                if(Target.slows[slow].duration <= 0) {
-                    Target.slows.splice(slow, 1);
-                }
-            }
-        }
-        for (var slow in Champion.slows) {
-            if (Champion.slows.hasOwnProperty(slow)) {
-                Champion.slows[slow].duration -= TIME_STEP;
-                if(Champion.slows[slow].duration <= 0) {
-                    Champion.slows.splice(slow, 1);
-                }
-            }
-        }
+        Target.tickDown();
+        Champion.tickDown();
 
         //Ensure that Distance between combatants is no less than 0
         if (Distance < 0) {

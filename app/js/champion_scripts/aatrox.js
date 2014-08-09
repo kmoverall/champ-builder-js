@@ -39,13 +39,13 @@ var Scripts = {
                 var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[ Champion.data.spells[0].vars[0]["link"] ][0]][STAT_LINK_MAP[ Champion.data.spells[0].vars[0]["link"] ][1]];
                 Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL);
 
-                //Apply CC
-                Log += "\tTarget is knocked up for 1s\n";
-                Target.crowdcontrol.cantMove += 1;
-                Target.crowdcontrol.cantAttack += 1;
-                Target.crowdcontrol.cantCast += 1;
+                //TODO: Champion and Target need generic useSkill functions that call these cast functions. Cast Functions return damage to the useSkill function
 
-                //Reset Cooldown
+                //Apply CC
+                Log += "\tTarget is knocked up for "+ Champion.data.spells[0].effect[4][this.rank-1] +"s\n";
+                Target.applyCC(Champion.data.spells[0].effect[4][this.rank-1], Champion.data.spells[0].effect[4][this.rank-1], Champion.data.spells[0].effect[4][this.rank-1], {}, true);
+
+                //Start Cooldown
                 this.cdtimer = this.cooldown;
             }
         }
@@ -77,15 +77,16 @@ var Scripts = {
 
                 //Apply CC
 
-
-                var appliedslow = {
+                Log += "\tTarget is slowed by " + Champion.data.spells[2].effect[1][this.rank - 1] + "% for " + Champion.data.spells[2].effect[3][this.rank - 1] + " seconds\n";
+                Target.applyCC(0, 0, 0, {
                     strength: Champion.data.spells[2].effect[1][this.rank - 1],
-                    duration: Champion.data.spells[2].effect[3][this.rank - 1] * (1 - Target.stats.tenacity)
-                };
-                Log += "\tTarget is slowed by " + appliedslow.strength + "% for " + appliedslow.duration * (1-Target.stats.tenacity)+" seconds\n";
-                Target.slows[0] = (appliedslow);
+                    duration: Champion.data.spells[2].effect[3][this.rank - 1],
+                    decayTo: Champion.data.spells[2].effect[1][this.rank - 1],
+                    current: Champion.data.spells[2].effect[1][this.rank - 1],
+                    slowtimer: Champion.data.spells[2].effect[3][this.rank - 1]
+                }, false);
 
-                //Reset Cooldown
+                //Start Cooldown
                 this.cdtimer = this.cooldown;
             }
         }
@@ -94,33 +95,43 @@ var Scripts = {
         cast: function() {}
     },
     BloodWellRevive: {
+        debuff: false,
+        duration: 0,
         apply: function() {},
         tick: function() {},
-        eventTriggered: function() {},
+        eventTrigger: function(magnitude, type, source) {},
         remove: function() {}
     },
     BloodWell: {
+        debuff: false,
+        duration: 0,
         apply: function() {},
         tick: function() {},
-        eventTriggered: function() {},
+        eventTrigger: function(magnitude, type, source) {},
         remove: function() {}
     },
     BloodThirst: {
+        debuff: false,
+        duration: 0,
         apply: function() {},
         tick: function() {},
-        eventTriggered: function() {},
+        eventTrigger: function(magnitude, type, source) {},
         remove: function() {}
     },
     BloodPrice: {
+        debuff: false,
+        duration: 0,
         apply: function() {},
         tick: function() {},
-        eventTriggered: function() {},
+        eventTrigger: function(magnitude, type, source) {},
         remove: function() {}
     },
     Massacre: {
+        debuff: false,
+        duration: 0,
         apply: function() {},
         tick: function() {},
-        eventTriggered: function() {},
+        eventTrigger: function(magnitude, type, source) {},
         remove: function() {}
     }
 

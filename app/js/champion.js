@@ -103,6 +103,7 @@ var Champion = {
             current: 0
         },
         tenacity: 0,
+        slowresist: 0,
         armorpenetration: {
             flat: 0,
             percent: 0
@@ -144,6 +145,15 @@ var Champion = {
     manaless: false,
     skills: {},
     effects: {},
+    events: {
+        preDamageTaken: {},
+        postDamageTaken: {},
+        damageDealt: {},
+        autoAttack: {},
+        enemyAutoAttack: {},
+        spellCast: {},
+        enemySpellCast: {}
+    },
     //Crowd control is listed by restricted actions as the key and duration as the value
     //Slows are listed as an effect and a duration
     crowdcontrol: {
@@ -165,28 +175,25 @@ var Champion = {
         //Triggers effects based on current damage source
         switch(source) {
             case DAMAGE_SOURCE.AUTOATTACK:
-                for(var effect in this.effects) {
-                    if (this.effects.hasOwnProperty(effect)) {
-                        this.effects[effect].eventTriggered(EVENTS.WAS_ATTACKED);
-                        this.effects[effect].eventTriggered(EVENTS.TOOK_DAMAGE);
+                for(var event in this.events.enemyAutoAttack) {
+                    if (this.events.enemyAutoAttack.hasOwnProperty(event)) {
+                        this.events.enemyAutoAttack[event].triggerEvent(damage);
                     }
                 }
                 break;
             case DAMAGE_SOURCE.SKILL:
-                for(var effect in this.effects) {
-                    if (this.effects.hasOwnProperty(effect)) {
-                        this.effects[effect].eventTriggered(EVENTS.HIT_BY_SKILL);
-                        this.effects[effect].eventTriggered(EVENTS.TOOK_DAMAGE);
+                for(var event in this.events.enemySpellCast) {
+                    if (this.events.enemySpellCast.hasOwnProperty(event)) {
+                        this.events.enemySpellCast[event].triggerEvent(damage);
                     }
                 }
                 break;
-            case DAMAGE_SOURCE.OTHER:
-                for(var effect in this.effects) {
-                    if (this.effects.hasOwnProperty(effect)) {
-                        this.effects[effect].eventTriggered(EVENTS.TOOK_DAMAGE);
-                    }
-                }
-                break;
+        }
+
+        for(var event in this.events.preDamageTaken) {
+            if (this.events.preDamageTaken.hasOwnProperty(event)) {
+                this.events.preDamageTaken[event].triggerEvent(damage, type, source);
+            }
         }
 
         //Reduces damage taken based on source and damage type
@@ -218,11 +225,11 @@ var Champion = {
             case DAMAGE_TYPES.MAGIC:
                 //apply magic resistance
                 effective_mr = this.stats.magicresistance.current * (1 - Champion.stats.magicpenetration.percent) - Champion.stats.magicpenetration.flat;
-                if (effective_armor >= 0) {
-                    damage *= 100 / (100 + effective_armor);
+                if (effective_mr >= 0) {
+                    damage *= 100 / (100 + effective_mr);
                 }
                 else {
-                    damage *= 2 - 100 / (100 - effective_armor)
+                    damage *= 2 - 100 / (100 - effective_mr)
                 }
 
                 //apply non-resistance damage reduction/amplification
@@ -265,6 +272,12 @@ var Champion = {
             remaining_damage = 0;
         }
 
+        for(var event in this.events.postDamageTaken) {
+            if (this.events.postDamageTaken.hasOwnProperty(event)) {
+                this.events.postDamageTaken[event].triggerEvent(damage, type, source);
+            }
+        }
+
         //Apply damage to current health
         this.stats.health.current -= remaining_damage;
         return damage;
@@ -276,11 +289,15 @@ var Champion = {
 
             var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance * (this.stats.critical.damage - 1));
             damage = Target.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
-            //Trigger all effects that occur on autoattacks
-            for (var effect in this.effects) {
-                if (this.effects.hasOwnProperty(effect)) {
-                    this.effects[effect].eventTriggered(EVENTS.ATTACKED);
-                    this.effects[effect].eventTriggered(EVENTS.DEALT_DAMAGE);
+            //Trigger all events that occur on autoattacks
+            for (var event in this.events.autoAttack) {
+                if (this.events.autoAttack.hasOwnProperty(event)) {
+                    this.events.autoAttack[event].triggerEvent(damage);
+                }
+            }
+            for (var event in this.events.damageDealt) {
+                if (this.events.damageDealt.hasOwnProperty(event)) {
+                    this.events.damageDealt[event].triggerEvent(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
                 }
             }
             this.heal(damage * this.stats.lifesteal);
@@ -299,6 +316,17 @@ var Champion = {
 
         Log += "\t" + this.data.name + " heals for " + amount + "\n";
         return amount;
+    },
+
+    applyCC: function(move, attack, cast, slow, ignore_tenacity) {
+        this.crowdcontrol.cantMove += ignore_tenacity ? move : move * (1 - this.stats.tenacity);
+        this.crowdcontrol.cantAttack += ignore_tenacity ? attack : attack * (1 - this.stats.tenacity);
+        this.crowdcontrol.cantCast += ignore_tenacity ? attack : attack * (1 - this.stats.tenacity);
+        if(slow.length > 0) {
+            slow["duration"] *= (1 - this.stats.tenacity);
+            slow["strength"] *= (1 - this.stats.slowresist);
+        }
+        this.slows.push(slow);
     },
 
     initialize: function() {
@@ -341,10 +369,26 @@ var Champion = {
         this.stats.health.total = (this.stats.health.base+ this.stats.health.perlevel*this.stats.level + this.stats.health.flatbonus)*(1+this.stats.health.percentbonus);
         this.stats.health.bonus = this.stats.health.flatbonus*(1+this.stats.health.percentbonus) + (this.stats.health.base + this.stats.health.perlevel*this.stats.level + this.stats.health.flatbonus)*this.stats.health.percentbonus;
         this.stats.healthregen.current = (this.stats.healthregen.base + this.stats.healthregen.perlevel*this.stats.level + this.stats.healthregen.flatbonus)*(1+this.stats.healthregen.percentbonus);
+        if (this.stats.health.current > this.stats.health.total) {
+            this.stats.health.current = this.stats.health.total;
+        }
+        else if (this.stats.health.current < 0) {
+            this.stats.health.current = 0;
+        }
+        //Handle max health changes
+        this.stats.health.current += Math.max(this.stats.health.total - oldHealth, 0);
 
         oldMana = this.stats.mana.total;
         this.stats.mana.total = (this.stats.mana.base + this.stats.mana.perlevel*this.stats.level + this.stats.mana.flatbonus)*(1+this.stats.mana.percentbonus);
         this.stats.manaregen.current = (this.stats.manaregen.base + this.stats.manaregen.perlevel*this.stats.level + this.stats.manaregen.flatbonus)*(1+this.stats.manaregen.percentbonus);
+        if (this.stats.mana.current > this.stats.mana.total) {
+            this.stats.mana.current = this.stats.mana.total;
+        }
+        else if (this.stats.mana.current < 0) {
+            this.stats.mana.current = 0;
+        }
+        //Handle max mana changes
+        this.stats.mana.current += Math.max(this.stats.mana.total - oldMana, 0);
 
         this.stats.attackdamage.current = (this.stats.attackdamage.base + this.stats.attackdamage.perlevel*this.stats.level + this.stats.attackdamage.flatbonus)*(1+this.stats.attackdamage.percentbonus);
         this.stats.attackdamage.bonus = this.stats.attackdamage.flatbonus*(1+this.stats.attackdamage.percentbonus) + (this.stats.attackdamage.base + this.stats.attackdamage.perlevel*this.stats.level + this.stats.attackdamage.flatbonus)*this.stats.attackdamage.percentbonus;
@@ -361,6 +405,23 @@ var Champion = {
         this.stats.magicresistance.bonus = this.stats.magicresistance.flatbonus*(1+this.stats.magicresistance.percentbonus) + (this.stats.magicresistance.base + this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*this.stats.magicresistance.percentbonus;
 
         this.stats.movementspeed.current = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
+
+        //Apply slows. Slow stacking is weird
+        if (this.slows.length > 0) {
+            var maxslow = 0;
+            for (var i = 1; i < this.slows.length; i++) {
+                if (this.slows[maxslow].current > this.slows[i].current) {
+                    maxslow = i;
+                }
+            }
+            this.stats.movementspeed.current *= this.slows[maxslow].current/100;
+            for (var i = 0; i < this.slows.length; i++) {
+                if (i != maxslow) {
+                    this.stats.movementspeed.current *= this.slows[i].current/100*0.35;
+                }
+            }
+        }
+
         //Apply soft movespeed caps
         if (this.stats.movementspeed.current > 490) {
             this.stats.movementspeed.current = this.stats.movementspeed.current*0.5 + 230;
@@ -373,9 +434,6 @@ var Champion = {
         }
 
         this.stats.abilitypower.current = (this.stats.abilitypower.base+ this.stats.abilitypower.perlevel*this.stats.level + this.stats.abilitypower.flatbonus)*(1+this.stats.abilitypower.percentbonus);
-
-        this.stats.health.current += Math.max(this.stats.health.total - oldHealth, 0);
-        this.stats.mana.current += Math.max(this.stats.mana.total - oldMana, 0);
     },
 
     reset: function() {
@@ -386,6 +444,16 @@ var Champion = {
         }
         this.skills = [];
         this.effects = {};
+        this.events = {
+            preDamageTaken: {},
+            postDamageTaken: {},
+            preDamageDealt: {},
+            postDamageDealt: {},
+            autoAttack: {},
+            enemyAutoAttack: {},
+            spellCast: {},
+            enemySpellCast: {}
+        };
         this.crowdcontrol.cantMove = 0;
         this.crowdcontrol.cantAttack = 0;
         this.crowdcontrol.cantCast = 0;
@@ -398,6 +466,51 @@ var Champion = {
         Scripts.load;
         this.stats.health.current = this.stats.health.total;
         this.stats.mana.current = this.stats.mana.total;
+    },
+
+    tickDown: function() {
+        this.attacktimer -= TIME_STEP;
+        for (var skill in this.skills) {
+            if (this.skills.hasOwnProperty(skill)) {
+                this.skills[skill].cdtimer -= TIME_STEP;
+            }
+        }
+        this.crowdcontrol.cantMove -= TIME_STEP;
+        this.crowdcontrol.cantAttack -= TIME_STEP;
+        this.crowdcontrol.cantCast -= TIME_STEP;
+        for (var slow in this.slows) {
+            if (this.slows.hasOwnProperty(slow)) {
+                this.slows[slow].slowtimer -= TIME_STEP;
+                this.slows[slow].current -= (this.slows[slow].strength-this.slows[slow].decayTo)*(TIME_STEP/this.slows[slow].duration);
+                if (this.slows[slow].slowtimer <= 0) {
+                    this.slows.splice(slow, 1);
+                }
+            }
+        }
+        for (var effect in this.effects) {
+            if (this.effects.hasOwnProperty(effect)) {
+                this.effects[effect].duration -= TIME_STEP;
+                this.effects[effect].tick();
+                if (this.effects[effect].duration <= 0) {
+                    this.removeEffect[effect];
+                }
+            }
+        }
+
+        this.calculateStats();
+    },
+
+    registerEvent: function(event, trigger) {
+        this.events[trigger].push(event);
+    },
+
+    removeEvent: function(event, trigger) {
+        this.events[trigger].splice(event, 1);
+    },
+
+    removeEffect: function(effectname) {
+        this.effects[effectname].remove();
+        this.effects.splice(effectname, 1);
     }
-}
+};
 
