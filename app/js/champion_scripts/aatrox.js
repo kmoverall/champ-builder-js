@@ -21,33 +21,32 @@ var Scripts = {
         range: 0,
         cdtimer: 0,
         aoe: true,
+        willCast: function() {
+            return cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.crowdcontrol.cantMove;
+        },
         cast: function() {
-            if (Distance <= this.range && Target.targetable && Champion.crowdcontrol.cantCast <= 0 && Champion.crowdcontrol.cantMove <= 0) {
-                //Apply health cost
-                var cost = Champion.stats.health.current * (Champion.data.spells[0].effect[2][this.rank-1] / 100);
-                Champion.stats.health.current -= cost;
-                //Store in the blood well
-                Champion.stats.mana.current = Math.min(Champion.stats.mana.current + cost, Champion.stats.mana.total);
+            //Apply health cost
+            var cost = Champion.stats.health.current * (Champion.data.spells[0].effect[2][this.rank-1] / 100);
+            Champion.stats.health.current -= cost;
+            //Store in the blood well
+            Champion.stats.mana.current = Math.min(Champion.stats.mana.current + cost, Champion.stats.mana.total);
 
-                Log += "\t" + Champion.data.name + " casts Dark Flight for " + cost + " health";
+            Log += "\t" + Champion.data.name + " casts Dark Flight for " + cost + " health";
 
-                //Close the gap
-                Distance = Math.max(Distance - this.range, 0);
+            //Close the gap
+            Distance = Math.max(Distance - this.range, 0);
 
-                //Calculate and apply damage
-                var basedamage = Champion.data.spells[0].effect[0][this.rank-1];
-                var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[ Champion.data.spells[0].vars[0]["link"] ][0]][STAT_LINK_MAP[ Champion.data.spells[0].vars[0]["link"] ][1]];
-                Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL);
+            //Calculate and apply damage
+            var basedamage = Champion.data.spells[0].effect[0][this.rank-1];
+            var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[ Champion.data.spells[0].vars[0]["link"] ][0]][STAT_LINK_MAP[ Champion.data.spells[0].vars[0]["link"] ][1]];
+            Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL);
 
-                //TODO: Champion and Target need generic useSkill functions that call these cast functions. Cast Functions return damage to the useSkill function
+            //Apply CC
+            Log += "\tTarget is knocked up for "+ Champion.data.spells[0].effect[4][this.rank-1] +"s\n";
+            //Target.applyCC(Champion.data.spells[0].effect[4][this.rank-1], Champion.data.spells[0].effect[4][this.rank-1], Champion.data.spells[0].effect[4][this.rank-1], {}, true);
 
-                //Apply CC
-                Log += "\tTarget is knocked up for "+ Champion.data.spells[0].effect[4][this.rank-1] +"s\n";
-                Target.applyCC(Champion.data.spells[0].effect[4][this.rank-1], Champion.data.spells[0].effect[4][this.rank-1], Champion.data.spells[0].effect[4][this.rank-1], {}, true);
-
-                //Start Cooldown
-                this.cdtimer = this.cooldown;
-            }
+            //Start Cooldown
+            this.cdtimer = this.cooldown;
         }
     },
     W: {
@@ -59,6 +58,7 @@ var Scripts = {
         range: 0,
         cdtimer: 0,
         aoe: true,
+        moves: false,
         cast: function() {
             if (Distance <= this.range && Target.targetable && Champion.crowdcontrol.cantCast <= 0) {
                 //Apply health cost
@@ -78,13 +78,13 @@ var Scripts = {
                 //Apply CC
 
                 Log += "\tTarget is slowed by " + Champion.data.spells[2].effect[1][this.rank - 1] + "% for " + Champion.data.spells[2].effect[3][this.rank - 1] + " seconds\n";
-                Target.applyCC(0, 0, 0, {
+                /*Target.applyCC(0, 0, 0, {
                     strength: Champion.data.spells[2].effect[1][this.rank - 1],
                     duration: Champion.data.spells[2].effect[3][this.rank - 1],
                     decayTo: Champion.data.spells[2].effect[1][this.rank - 1],
                     current: Champion.data.spells[2].effect[1][this.rank - 1],
                     slowtimer: Champion.data.spells[2].effect[3][this.rank - 1]
-                }, false);
+                }, false);*/
 
                 //Start Cooldown
                 this.cdtimer = this.cooldown;
@@ -135,4 +135,4 @@ var Scripts = {
         remove: function() {}
     }
 
-}
+};

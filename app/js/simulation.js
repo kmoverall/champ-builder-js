@@ -13,7 +13,7 @@ function simulate() {
         disruption: [[0, 0], [50, 25], [100, 100]],
         chasedown: [[0, 0], [50, 25], [100, 100]],
         escape: [[0, 0], [50, 25], [100, 100]]
-    }
+    };
 
     var will_plot = {
         composite: false,
@@ -24,12 +24,19 @@ function simulate() {
         escape: false
     };
 
+    var current_health;
+    var current_time;
+    var init_targethealth;
+    var init_champhealth;
+
     //This is a stupid hack due to the slows arrays sometimes deciding that they didn't feel like being arrays when asked to do array things
     Target.slows = [];
     Champion.slows = [];
 
     for (var time = 0; time <= MAX_TIME; time += TIME_STEP) {
         Log += time+": ";
+        //A shitty way to allow other scopes access to the current time in the simulation
+        SimTime = time;
 
         //resets will_plot variables
         will_plot = {
@@ -40,6 +47,8 @@ function simulate() {
             chasedown: false,
             escape: false
         };
+        init_targethealth = Target.stats.health.current;
+        init_champhealth = Champion.stats.health.current;
 
         //--------------------------------------------
         // Combat Processing
@@ -48,34 +57,18 @@ function simulate() {
         //Champion auto attack
         if(Champion.attacktimer <= 0 && Target.targetable && Champion.crowdcontrol.cantAttack <= 0) {
             Champion.autoAttack();
-            will_plot["damage"] = true;
         }
 
         //Target auto attack
         if(Target.attacktimer <= 0 && Champion.targetable && Target.crowdcontrol.cantAttack <= 0) {
             Target.autoAttack();
-            will_plot["durability"] = true;
         }
 
         //Champion skills
         for (var skill in Champion.skills) {
             if (Champion.skills.hasOwnProperty(skill)) {
-                if(Champion.skills[skill].cdtimer <=0 && Target.targetable) {
-                    Champion.skills[skill].cast();
-                    will_plot["damage"] = true;
-                    will_plot["durability"] = true;
-                }
+                Champion.useSkill(skill);
             }
-        }
-
-        // Apply regeneration every 0.5 seconds. Method of determining this is weird due to float rounding errors
-        // Regen must be divided by 10, as it is stored as per 5s
-        if(time % 0.5 > (time + TIME_STEP)% 0.5) {
-            Target.heal(Target.stats.healthregen.current / 10);
-            Target.stats.mana.current += Target.stats.manaregen.current / 10;
-
-            Champion.heal(Champion.stats.healthregen.current / 10);
-            Champion.stats.mana.current += Champion.stats.manaregen.current / 10;
         }
 
         //--------------------------------------------
@@ -89,15 +82,22 @@ function simulate() {
             Distance = 0;
         }
 
+        if (Math.abs(init_champhealth - Champion.stats.health.current) > Champion.stats.health.total * 0.01) {
+            will_plot["durability"] = true;
+        }
+        if (Math.abs(init_targethealth - Target.stats.health.current) > Target.stats.health.total * 0.01) {
+            will_plot["damage"] = true;
+        }
+
         //Push graph data to results arrays
         if (will_plot["damage"]) {
-            var current_time = time / MAX_TIME * 100;
-            var current_health = 100 - (Math.max(Target.stats.health.current, 0) / Target.stats.health.total * 100);
+            current_time = time / MAX_TIME * 100;
+            current_health = 100 - (Math.max(Target.stats.health.current, 0) / Target.stats.health.total * 100);
             result.damage.push([current_time, current_health]);
         }
         if (will_plot["durability"]) {
-            var current_time = time / MAX_TIME * 100;
-            var current_health = Math.max(Champion.stats.health.current, 0) / Champion.stats.health.total * 100;
+            current_time = time / MAX_TIME * 100;
+            current_health = Math.max(Champion.stats.health.current, 0) / Champion.stats.health.total * 100;
             result.durability.push([current_time, current_health]);
         }
 
@@ -106,12 +106,12 @@ function simulate() {
             Log += "Target Dies";
 
             //Adds final data point
-            var current_time = time / MAX_TIME * 100;
-            var current_health = 100 - (Math.max(Target.stats.health.current, 0) / Target.stats.health.total * 100);
+            current_time = time / MAX_TIME * 100;
+            current_health = 100 - (Math.max(Target.stats.health.current, 0) / Target.stats.health.total * 100);
             result.damage.push([current_time, current_health]);
 
-            var current_time = time / MAX_TIME * 100;
-            var current_health = Math.max(Champion.stats.health.current, 0) / Champion.stats.health.total * 100;
+            current_time = time / MAX_TIME * 100;
+            current_health = Math.max(Champion.stats.health.current, 0) / Champion.stats.health.total * 100;
             result.durability.push([current_time, current_health]);
 
             time = MAX_TIME+1;
@@ -120,12 +120,12 @@ function simulate() {
             Log += "Champion Dies";
 
             //Adds final data point
-            var current_time = time / MAX_TIME * 100;
-            var current_health = 100 - (Math.max(Target.stats.health.current, 0) / Target.stats.health.total * 100);
+            current_time = time / MAX_TIME * 100;
+            current_health = 100 - (Math.max(Target.stats.health.current, 0) / Target.stats.health.total * 100);
             result.damage.push([current_time, current_health]);
 
-            var current_time = time / MAX_TIME * 100;
-            var current_health = Math.max(Champion.stats.health.current, 0) / Champion.stats.health.total * 100;
+            current_time = time / MAX_TIME * 100;
+            current_health = Math.max(Champion.stats.health.current, 0) / Champion.stats.health.total * 100;
             result.durability.push([current_time, current_health]);
 
             time = MAX_TIME+1;

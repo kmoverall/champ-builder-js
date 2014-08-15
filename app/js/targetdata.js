@@ -182,26 +182,14 @@ var Target = {
         //Triggers effects based on current damage source
         switch(source) {
             case DAMAGE_SOURCE.AUTOATTACK:
-                for(var event in this.events.enemyAutoAttack) {
-                    if (this.events.enemyAutoAttack.hasOwnProperty(event)) {
-                        this.events.enemyAutoAttack[event].triggerEvent(damage);
-                    }
-                }
+                this.processEvents("enemyAutoAttack", [damage]);
                 break;
             case DAMAGE_SOURCE.SKILL:
-                for(var event in this.events.enemySpellCast) {
-                    if (this.events.enemySpellCast.hasOwnProperty(event)) {
-                        this.events.enemySpellCast[event].triggerEvent(damage);
-                    }
-                }
+                this.processEvents("enemySpellCast", [damage]);
                 break;
         }
 
-        for(var event in this.events.preDamageTaken) {
-            if (this.events.preDamageTaken.hasOwnProperty(event)) {
-                this.events.preDamageTaken[event].triggerEvent(damage, type, source);
-            }
-        }
+        this.processEvents("preDamageTaken", [damage, type, source]);
 
         //Reduces damage taken based on source and damage type
         switch(type) {
@@ -279,11 +267,8 @@ var Target = {
             remaining_damage = 0;
         }
 
-        for(var event in this.events.postDamageTaken) {
-            if (this.events.postDamageTaken.hasOwnProperty(event)) {
-                this.events.postDamageTaken[event].triggerEvent(damage, type, source);
-            }
-        }
+        this.processEvents("postDamageTaken", [damage, type, source]);
+
 
         //Apply damage to current health
         this.stats.health.current -= remaining_damage;
@@ -295,18 +280,11 @@ var Target = {
             Log += "\tTarget attacks\n";
 
             var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance * (this.stats.critical.damage - 1));
+            this.processEvents("preDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
             damage = Champion.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
             //Trigger all effects that occur on autoattacks
-            for (var event in this.events.autoAttack) {
-                if (this.events.autoAttack.hasOwnProperty(event)) {
-                    this.events.autoAttack[event].triggerEvent(damage);
-                }
-            }
-            for (var event in this.events.damageDealt) {
-                if (this.events.damageDealt.hasOwnProperty(event)) {
-                    this.events.damageDealt[event].triggerEvent(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
-                }
-            }
+            this.processEvents("autoAttack", [damage]);
+            this.processEvents("postDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
 
             this.heal(damage * this.stats.lifesteal);
 
@@ -440,22 +418,17 @@ var Target = {
     },
 
     tickDown: function() {
+        // Apply regeneration every 0.5 seconds. Method of determining this is weird due to float rounding errors
+        // Regen must be divided by 10, as it is stored as per 5s
+        if(SimTime % 0.5 > (SimTime + TIME_STEP)% 0.5) {
+            this.heal(this.stats.healthregen.current / 10);
+            this.stats.mana.current += this.stats.manaregen.current / 10;
+        }
+
         this.attacktimer -= TIME_STEP;
         for (var skill in this.skills) {
             if (this.skills.hasOwnProperty(skill)) {
                 this.skills[skill].cdtimer -= TIME_STEP;
-            }
-        }
-        this.crowdcontrol.cantMove -= TIME_STEP;
-        this.crowdcontrol.cantAttack -= TIME_STEP;
-        this.crowdcontrol.cantCast -= TIME_STEP;
-        for (var slow in this.slows) {
-            if (this.slows.hasOwnProperty(slow)) {
-                this.slows[slow].slowtimer -= TIME_STEP;
-                this.slows[slow].current -= (this.slows[slow].strength-this.slows[slow].decayTo)*(TIME_STEP/this.slows[slow].duration);
-                if (this.slows[slow].slowtimer <= 0) {
-                    this.slows.splice(slow, 1);
-                }
             }
         }
         for (var effect in this.effects) {
@@ -463,7 +436,7 @@ var Target = {
                 this.effects[effect].duration -= TIME_STEP;
                 this.effects[effect].tick();
                 if (this.effects[effect].duration <= 0) {
-                    this.removeEffect[effect];
+                    this.removeEffect(effect);
                 }
             }
         }
@@ -482,10 +455,20 @@ var Target = {
     removeEffect: function(effectname) {
         this.effects[effectname].remove();
         this.effects.splice(effectname, 1);
+    },
+
+    //Adds an Effect and calls any functions required to initialize the effect
+    addEffect: function(effect) {
+        this.effects.push(effect);
+        effect.apply();
+    },
+
+    //Calls all events of a certain trigger, sending an array of arguments
+    processEvents: function(trigger, arguments) {
+        for (var event in this.events[trigger]) {
+            if (this.events[trigger].hasOwnProperty(event)) {
+                this.events[trigger][event].triggerEvent(arguments);
+            }
+        }
     }
-
-    
 };
-
-
-

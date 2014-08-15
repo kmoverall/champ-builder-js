@@ -4,3 +4,4 @@
 
 var Log = "";
 var Distance = 0;
+var SimTime = 0;
