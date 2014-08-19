@@ -156,14 +156,14 @@ var Champion = {
         enemySpellCast: {}
     },
     //Crowd control is listed by restricted actions
-    //Slows are listed as an array of a strength and a duration
     crowdcontrol: {
         cantMove: false,
         cantAttack: false,
         cantCast: false,
         airborne: false
     },
-    slows: [],
+    //Slows are listed as an array of slow strengths
+    slows: {},
     shield: {
         standard: 0,
         physical: 0,
@@ -316,26 +316,14 @@ var Champion = {
         for (var effect in this.effects) {
             if (this.effects.hasOwnProperty(effect)) {
                 this.effects[effect].duration -= TIME_STEP;
-                this.effects[effect].tick();
                 if (this.effects[effect].duration <= 0) {
                     this.removeEffect(effect);
                 }
+                this.effects[effect].tick();
             }
         }
 
         this.calculateStats();
-    },
-
-    //TODO remove apply CC and shift over to effects system
-    applyCC: function(move, attack, cast, slow, ignore_tenacity) {
-        this.crowdcontrol.cantMove += ignore_tenacity ? move : move * (1 - this.stats.tenacity);
-        this.crowdcontrol.cantAttack += ignore_tenacity ? attack : attack * (1 - this.stats.tenacity);
-        this.crowdcontrol.cantCast += ignore_tenacity ? attack : attack * (1 - this.stats.tenacity);
-        if(slow.length > 0) {
-            slow["duration"] *= (1 - this.stats.tenacity);
-            slow["strength"] *= (1 - this.stats.slowresist);
-        }
-        this.slows.push(slow);
     },
 
     //Loads data from Riot API and sets data to the retrieved data
@@ -418,17 +406,21 @@ var Champion = {
         this.stats.movementspeed.current = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
 
         //Apply slows. Slow stacking is weird
-        if (this.slows.length > 0) {
-            var maxslow = 0;
-            for (var i = 1; i < this.slows.length; i++) {
-                if (this.slows[maxslow].current > this.slows[i].current) {
-                    maxslow = i;
+        var maxslow = null;
+        var maxvalue = 0;
+        for (var slow in this.slows) {
+            if (this.slows.hasOwnProperty(slow)) {
+                if (this.slows[slow] > maxvalue) {
+                    maxvalue = this.slows[slow];
+                    maxslow = slow;
                 }
             }
-            this.stats.movementspeed.current *= this.slows[maxslow].current/100;
-            for (var i = 0; i < this.slows.length; i++) {
-                if (i != maxslow) {
-                    this.stats.movementspeed.current *= this.slows[i].current/100*0.35;
+        }
+        this.stats.movementspeed *= maxslow/100;
+        for (var slow in this.slows) {
+            if (this.slows.hasOwnProperty(slow)) {
+                if (maxslow != slow) {
+                    this.stats.movementspeed *= this.slows[slow]/100*0.35;
                 }
             }
         }
@@ -486,14 +478,13 @@ var Champion = {
     },
 
     //Removes an event with a specified key from the appropriate trigger array
-    removeEvent: function(key, trigger) {
-        this.events[trigger].splice(key, 1);
+    removeEvent: function(event, trigger) {
+        delete this.events[trigger][event];
     },
 
-    //Removes an Effect and calls any functions required to end the effect
-    removeEffect: function(key) {
-        this.effects[key].remove();
-        this.effects.splice(key, 1);
+    removeEffect: function(effectname) {
+        this.effects[effectname].remove();
+        delete this.effects[effectname];
     },
 
     //Adds an Effect and calls any functions required to initialize the effect

@@ -22,7 +22,7 @@ var Scripts = {
         cdtimer: 0,
         aoe: true,
         willCast: function() {
-            return cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.crowdcontrol.cantMove;
+            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.crowdcontrol.cantMove;
         },
         cast: function() {
             //Apply health cost
@@ -43,7 +43,7 @@ var Scripts = {
 
             //Apply CC
             Log += "\tTarget is knocked up for "+ Champion.data.spells[0].effect[4][this.rank-1] +"s\n";
-            //Target.applyCC(Champion.data.spells[0].effect[4][this.rank-1], Champion.data.spells[0].effect[4][this.rank-1], Champion.data.spells[0].effect[4][this.rank-1], {}, true);
+            Target.addEffect(Scripts.effects.DarkFlight);
 
             //Start Cooldown
             this.cdtimer = this.cooldown;
@@ -59,6 +59,9 @@ var Scripts = {
         cdtimer: 0,
         aoe: true,
         moves: false,
+        willCast: function() {
+            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast;
+        },
         cast: function() {
             if (Distance <= this.range && Target.targetable && Champion.crowdcontrol.cantCast <= 0) {
                 //Apply health cost
@@ -78,13 +81,7 @@ var Scripts = {
                 //Apply CC
 
                 Log += "\tTarget is slowed by " + Champion.data.spells[2].effect[1][this.rank - 1] + "% for " + Champion.data.spells[2].effect[3][this.rank - 1] + " seconds\n";
-                /*Target.applyCC(0, 0, 0, {
-                    strength: Champion.data.spells[2].effect[1][this.rank - 1],
-                    duration: Champion.data.spells[2].effect[3][this.rank - 1],
-                    decayTo: Champion.data.spells[2].effect[1][this.rank - 1],
-                    current: Champion.data.spells[2].effect[1][this.rank - 1],
-                    slowtimer: Champion.data.spells[2].effect[3][this.rank - 1]
-                }, false);*/
+                Target.addEffect(Scripts.effects.BladesOfTorment);
 
                 //Start Cooldown
                 this.cdtimer = this.cooldown;
@@ -94,45 +91,101 @@ var Scripts = {
     R: {
         cast: function() {}
     },
-    BloodWellRevive: {
-        debuff: false,
-        duration: 0,
-        apply: function() {},
-        tick: function() {},
-        eventTrigger: function(magnitude, type, source) {},
-        remove: function() {}
+    effects: {
+        DarkFlight: {
+            debuff: true,
+            cleansable: false,
+            duration: 0,
+            apply: function () {
+                Champion.crowdcontrol.cantMove = true;
+                Champion.crowdcontrol.cantCast = true;
+                Champion.crowdcontrol.cantAttack = true;
+                Champion.crowdcontrol.airborne = true;
+                this.duration = Champion.data.spells[0].effect[4][this.rank-1];
+            },
+            tick: function () {
+                Champion.crowdcontrol.cantMove = true;
+                Champion.crowdcontrol.cantCast = true;
+                Champion.crowdcontrol.cantAttack = true;
+                Champion.crowdcontrol.airborne = true;
+            },
+            remove: function () {
+                Champion.crowdcontrol.cantMove = false;
+                Champion.crowdcontrol.cantCast = false;
+                Champion.crowdcontrol.cantAttack = false;
+                Champion.crowdcontrol.airborne = false;
+            }
+        },
+        BladesOfTorment: {
+            debuff: true,
+            cleansable: true,
+            duration: 0,
+            apply: function () {
+                Champion.slows.push({BladesOfTorment: Champion.data.spells[2].effect[1][this.rank - 1] * (1-Champion.stats.slowresist)});
+                this.duration = Champion.data.spells[2].effect[3][this.rank - 1] * (1 - Champion.stats.tenacity);
+            },
+            tick: function () {},
+            remove: function () {
+                delete Champion.slows.BladesOfTorment;
+            }
+        },
+        BloodWellRevive: {
+            debuff: false,
+            cleansable: false,
+            duration: 1000000,
+            apply: function () {
+            },
+            tick: function () {
+            },
+            remove: function () {
+            }
+        },
+        BloodWell: {
+            debuff: false,
+            cleansable: false,
+            duration: 0,
+            apply: function () {
+            },
+            tick: function () {
+            },
+            remove: function () {
+            }
+        },
+        BloodThirst: {
+            debuff: false,
+            cleansable: false,
+            duration: 0,
+            apply: function () {
+            },
+            tick: function () {
+            },
+            remove: function () {
+            }
+        },
+        BloodPrice: {
+            debuff: false,
+            cleansable: false,
+            duration: 0,
+            apply: function () {
+            },
+            tick: function () {
+            },
+            remove: function () {
+            }
+        },
+        Massacre: {
+            debuff: false,
+            cleansable: false,
+            duration: 0,
+            apply: function () {
+            },
+            tick: function () {
+            },
+            remove: function () {
+            }
+        }
     },
-    BloodWell: {
-        debuff: false,
-        duration: 0,
-        apply: function() {},
-        tick: function() {},
-        eventTrigger: function(magnitude, type, source) {},
-        remove: function() {}
-    },
-    BloodThirst: {
-        debuff: false,
-        duration: 0,
-        apply: function() {},
-        tick: function() {},
-        eventTrigger: function(magnitude, type, source) {},
-        remove: function() {}
-    },
-    BloodPrice: {
-        debuff: false,
-        duration: 0,
-        apply: function() {},
-        tick: function() {},
-        eventTrigger: function(magnitude, type, source) {},
-        remove: function() {}
-    },
-    Massacre: {
-        debuff: false,
-        duration: 0,
-        apply: function() {},
-        tick: function() {},
-        eventTrigger: function(magnitude, type, source) {},
-        remove: function() {}
-    }
+    events: {
 
+    }
 };

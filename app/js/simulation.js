@@ -64,6 +64,8 @@ function simulate() {
             Target.autoAttack();
         }
 
+        console.log(Champion);
+
         //Champion skills
         for (var skill in Champion.skills) {
             if (Champion.skills.hasOwnProperty(skill)) {

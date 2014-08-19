@@ -304,17 +304,6 @@ var Target = {
         return amount;
     },
 
-    applyCC: function(move, attack, cast, slow, ignore_tenacity) {
-        this.crowdcontrol.cantMove += ignore_tenacity ? move : move * (1 - this.stats.tenacity);
-        this.crowdcontrol.cantAttack += ignore_tenacity ? attack : attack * (1 - this.stats.tenacity);
-        this.crowdcontrol.cantCast += ignore_tenacity ? attack : attack * (1 - this.stats.tenacity);
-        if(slow.length > 0) {
-            slow["duration"] *= (1 - this.stats.tenacity);
-            slow["strength"] *= (1 - this.stats.slowresist);
-        }
-        this.slows.push(slow);
-    },
-
     calculateStats: function() {
         oldHealth = this.stats.health.total;
         this.stats.health.total = (this.stats.health.base+ this.stats.health.perlevel*this.stats.level + this.stats.health.flatbonus)*(1+this.stats.health.percentbonus);
@@ -358,17 +347,21 @@ var Target = {
         this.stats.movementspeed.current = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
 
         //Apply slows. Slow stacking is weird
-        if (this.slows.length > 0) {
-            var maxslow = 0;
-            for (var i = 1; i < this.slows.length; i++) {
-                if (this.slows[maxslow].current > this.slows[i].current) {
-                    maxslow = i;
+        var maxslow = null;
+        var maxvalue = 0;
+        for (var slow in this.slows) {
+            if (this.slows.hasOwnProperty(slow)) {
+                if (this.slows[slow] > maxvalue) {
+                    maxvalue = this.slows[slow];
+                    maxslow = slow;
                 }
             }
-            this.stats.movementspeed.current *= this.slows[maxslow].current/100;
-            for (var i = 0; i < this.slows.length; i++) {
-                if (i != maxslow) {
-                    this.stats.movementspeed.current *= this.slows[i].current/100*0.35;
+        }
+        this.stats.movementspeed *= maxslow/100;
+        for (var slow in this.slows) {
+            if (this.slows.hasOwnProperty(slow)) {
+                if (maxslow != slow) {
+                    this.stats.movementspeed *= this.slows[slow]/100*0.35;
                 }
             }
         }
@@ -449,16 +442,18 @@ var Target = {
     },
 
     removeEvent: function(event, trigger) {
-        this.events[trigger].splice(event, 1);
+        delete this.events[trigger][event];
     },
 
     removeEffect: function(effectname) {
         this.effects[effectname].remove();
-        this.effects.splice(effectname, 1);
+        delete this.effects[effectname];
     },
 
     //Adds an Effect and calls any functions required to initialize the effect
     addEffect: function(effect) {
+        console.log(effects);
+        console.log(effect);
         this.effects.push(effect);
         effect.apply();
     },
