@@ -30,8 +30,10 @@ function simulate() {
     var init_champhealth;
 
     //This is a stupid hack due to the slows arrays sometimes deciding that they didn't feel like being arrays when asked to do array things
-    Target.slows = [];
-    Champion.slows = [];
+    Target.slows = {};
+    Champion.slows = {};
+    Target.effects = {};
+    Champion.effects = {};
 
     for (var time = 0; time <= MAX_TIME; time += TIME_STEP) {
         Log += time+": ";
@@ -63,8 +65,6 @@ function simulate() {
         if(Target.attacktimer <= 0 && Champion.targetable && Target.crowdcontrol.cantAttack <= 0) {
             Target.autoAttack();
         }
-
-        console.log(Champion);
 
         //Champion skills
         for (var skill in Champion.skills) {

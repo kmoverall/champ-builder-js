@@ -438,11 +438,11 @@ var Target = {
     },
 
     registerEvent: function(event, trigger) {
-        this.events[trigger].push(event);
+        this.events[trigger][event.name] = event;
     },
 
-    removeEvent: function(event, trigger) {
-        delete this.events[trigger][event];
+    removeEvent: function(eventname, trigger) {
+        delete this.events[trigger][eventname];
     },
 
     removeEffect: function(effectname) {
@@ -452,10 +452,8 @@ var Target = {
 
     //Adds an Effect and calls any functions required to initialize the effect
     addEffect: function(effect) {
-        console.log(effects);
-        console.log(effect);
-        this.effects.push(effect);
-        effect.apply();
+        this.effects[effect.name] = effect;
+        this.effects[effect.name].apply();
     },
 
     //Calls all events of a certain trigger, sending an array of arguments

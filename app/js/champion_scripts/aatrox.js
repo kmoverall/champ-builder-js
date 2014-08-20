@@ -7,15 +7,14 @@ var Scripts = {
         /*Champion.effects.BloodWellRevive = this.BloodWellRevive;
         Champion.effects.BloodWell = this.BloodWell;
         Champion.effects.BloodThirst = this.BloodThirst;*/
-        this.Q.cooldown = Champion.data.spells[0].cooldown[this.Q.rank-1]*(1-Champion.stats.cdr);
         this.Q.range = Champion.data.spells[0].range[this.Q.rank-1];
         Champion.skills.push(this.Q);
 
-        this.E.cooldown = Champion.data.spells[2].cooldown[this.E.rank-1]*(1-Champion.stats.cdr);
         this.E.range = Champion.data.spells[2].range[this.E.rank-1];
         Champion.skills.push(this.E);
     },
     Q: {
+        name: "Dark Flight",
         rank: 5,
         cooldown: 0,
         range: 0,
@@ -25,6 +24,9 @@ var Scripts = {
             return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.crowdcontrol.cantMove;
         },
         cast: function() {
+            //Set Variables
+            this.cooldown = Champion.data.spells[0].cooldown[this.rank-1]*(1-Champion.stats.cdr);
+
             //Apply health cost
             var cost = Champion.stats.health.current * (Champion.data.spells[0].effect[2][this.rank-1] / 100);
             Champion.stats.health.current -= cost;
@@ -43,6 +45,7 @@ var Scripts = {
 
             //Apply CC
             Log += "\tTarget is knocked up for "+ Champion.data.spells[0].effect[4][this.rank-1] +"s\n";
+            Scripts.effects.DarkFlight.duration = Champion.data.spells[0].effect[4][this.rank-1];
             Target.addEffect(Scripts.effects.DarkFlight);
 
             //Start Cooldown
@@ -53,6 +56,7 @@ var Scripts = {
         cast: function() {}
     },
     E: {
+        name: "Blades of Torment",
         rank: 5,
         cooldown: 0,
         range: 0,
@@ -63,73 +67,79 @@ var Scripts = {
             return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast;
         },
         cast: function() {
-            if (Distance <= this.range && Target.targetable && Champion.crowdcontrol.cantCast <= 0) {
-                //Apply health cost
-                var cost = Champion.stats.health.current * (Champion.data.spells[2].effect[4][this.rank-1] / 100);
-                Champion.stats.health.current -= cost;
-                //Store in the blood well
-                Champion.stats.mana.current = Math.min(Champion.stats.mana.current + cost, Champion.stats.mana.total);
+            //Set Variables
+            this.cooldown = Champion.data.spells[2].cooldown[this.rank-1]*(1-Champion.stats.cdr);
 
-                Log += "\t" + Champion.data.name + " casts Blades of Torment for " + cost + " health";
+            //Apply health cost
+            var cost = Champion.stats.health.current * (Champion.data.spells[2].effect[4][this.rank-1] / 100);
+            Champion.stats.health.current -= cost;
+            //Store in the blood well
+            Champion.stats.mana.current = Math.min(Champion.stats.mana.current + cost, Champion.stats.mana.total);
 
-                //Calculate and apply damage
-                var basedamage = Champion.data.spells[2].effect[0][this.rank-1];
-                var scalingdamage = Champion.data.spells[2].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[ Champion.data.spells[2].vars[0]["link"] ][0]][STAT_LINK_MAP[ Champion.data.spells[2].vars[0]["link"] ][1]];
-                scalingdamage += Champion.data.spells[2].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[ Champion.data.spells[2].vars[1]["link"] ][0]][STAT_LINK_MAP[ Champion.data.spells[2].vars[1]["link"] ][1]];
-                Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
+            Log += "\t" + Champion.data.name + " casts Blades of Torment for " + cost + " health";
 
-                //Apply CC
+            //Calculate and apply damage
+            var basedamage = Champion.data.spells[2].effect[0][this.rank-1];
+            var scalingdamage = Champion.data.spells[2].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[ Champion.data.spells[2].vars[0]["link"] ][0]][STAT_LINK_MAP[ Champion.data.spells[2].vars[0]["link"] ][1]];
+            scalingdamage += Champion.data.spells[2].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[ Champion.data.spells[2].vars[1]["link"] ][0]][STAT_LINK_MAP[ Champion.data.spells[2].vars[1]["link"] ][1]];
+            Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
 
-                Log += "\tTarget is slowed by " + Champion.data.spells[2].effect[1][this.rank - 1] + "% for " + Champion.data.spells[2].effect[3][this.rank - 1] + " seconds\n";
-                Target.addEffect(Scripts.effects.BladesOfTorment);
+            //Apply CC
 
-                //Start Cooldown
-                this.cdtimer = this.cooldown;
-            }
+            Log += "\tTarget is slowed by " + Champion.data.spells[2].effect[1][this.rank - 1] + "% for " + Champion.data.spells[2].effect[3][this.rank - 1] + " seconds\n";
+            Scripts.effects.BladesOfTorment.duration = Champion.data.spells[2].effect[3][this.rank - 1] * (1-Champion.stats.tenacity);
+            Scripts.effects.BladesOfTorment.strength = Champion.data.spells[2].effect[1][this.rank - 1] * (1-Champion.stats.slowresist);
+            Target.addEffect(Scripts.effects.BladesOfTorment);
+
+            //Start Cooldown
+            this.cdtimer = this.cooldown;
         }
+
     },
     R: {
         cast: function() {}
     },
     effects: {
         DarkFlight: {
+            name: "Dark Flight Knockup",
             debuff: true,
             cleansable: false,
             duration: 0,
             apply: function () {
-                Champion.crowdcontrol.cantMove = true;
-                Champion.crowdcontrol.cantCast = true;
-                Champion.crowdcontrol.cantAttack = true;
-                Champion.crowdcontrol.airborne = true;
-                this.duration = Champion.data.spells[0].effect[4][this.rank-1];
+                Target.crowdcontrol.cantMove = true;
+                Target.crowdcontrol.cantCast = true;
+                Target.crowdcontrol.cantAttack = true;
+                Target.crowdcontrol.airborne = true;
             },
             tick: function () {
-                Champion.crowdcontrol.cantMove = true;
-                Champion.crowdcontrol.cantCast = true;
-                Champion.crowdcontrol.cantAttack = true;
-                Champion.crowdcontrol.airborne = true;
+                Target.crowdcontrol.cantMove = true;
+                Target.crowdcontrol.cantCast = true;
+                Target.crowdcontrol.cantAttack = true;
+                Target.crowdcontrol.airborne = true;
             },
             remove: function () {
-                Champion.crowdcontrol.cantMove = false;
-                Champion.crowdcontrol.cantCast = false;
-                Champion.crowdcontrol.cantAttack = false;
-                Champion.crowdcontrol.airborne = false;
+                Target.crowdcontrol.cantMove = false;
+                Target.crowdcontrol.cantCast = false;
+                Target.crowdcontrol.cantAttack = false;
+                Target.crowdcontrol.airborne = false;
             }
         },
         BladesOfTorment: {
+            name: "Blades of Torment Slow",
             debuff: true,
             cleansable: true,
             duration: 0,
+            strength: 0,
             apply: function () {
-                Champion.slows.push({BladesOfTorment: Champion.data.spells[2].effect[1][this.rank - 1] * (1-Champion.stats.slowresist)});
-                this.duration = Champion.data.spells[2].effect[3][this.rank - 1] * (1 - Champion.stats.tenacity);
+                Target.slows[this.name] = this.strength;
             },
             tick: function () {},
             remove: function () {
-                delete Champion.slows.BladesOfTorment;
+                delete Target.slows[name];
             }
         },
         BloodWellRevive: {
+            name: "Blood Well Revive",
             debuff: false,
             cleansable: false,
             duration: 1000000,
@@ -141,6 +151,7 @@ var Scripts = {
             }
         },
         BloodWell: {
+            name: "Blood Well",
             debuff: false,
             cleansable: false,
             duration: 0,

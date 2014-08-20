@@ -143,7 +143,7 @@ var Champion = {
         }
     },
     manaless: false,
-    skills: {},
+    skills: [],
     effects: {},
     events: {
         preDamageTaken: {},
@@ -473,13 +473,12 @@ var Champion = {
     },
 
     //Adds an event to the appropriate array based on its trigger
-    registerEvent: function(event, trigger) {
-        this.events[trigger].push(event);
+    rregisterEvent: function(event, trigger) {
+        this.events[trigger][event.name] = event;
     },
 
-    //Removes an event with a specified key from the appropriate trigger array
-    removeEvent: function(event, trigger) {
-        delete this.events[trigger][event];
+    removeEvent: function(eventname, trigger) {
+        delete this.events[trigger][eventname];
     },
 
     removeEffect: function(effectname) {
@@ -489,8 +488,8 @@ var Champion = {
 
     //Adds an Effect and calls any functions required to initialize the effect
     addEffect: function(effect) {
-        this.effects.push(effect);
-        effect.apply();
+        this.effects[effect.name] = effect;
+        this.effects[effect.name].apply();
     },
 
     //Calls all events of a certain trigger, sending an array of arguments
