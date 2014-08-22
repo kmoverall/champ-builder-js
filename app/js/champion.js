@@ -169,7 +169,7 @@ var Champion = {
         physical: 0,
         magic: 0
     },
-    healingreduced: false,
+    healingeffect: 1,
     targetable: true,
     attacktimer: 0,
 
@@ -281,9 +281,7 @@ var Champion = {
 
     //Champion heals for an amount = amount
     heal: function(amount) {
-        if (this.healingreduced) {
-            amount = amount / 2;
-        }
+        amount *= this.healingeffect;
 
         this.stats.health.current = Math.min(this.stats.health.current + amount, this.stats.health.total);
 
@@ -313,13 +311,16 @@ var Champion = {
                 this.skills[skill].cdtimer -= TIME_STEP;
             }
         }
+        console.log(this.effects);
+        console.log(SimTime);
         for (var effect in this.effects) {
             if (this.effects.hasOwnProperty(effect)) {
                 this.effects[effect].duration -= TIME_STEP;
                 if (this.effects[effect].duration <= 0) {
                     this.removeEffect(effect);
+                } else {
+                    this.effects[effect].tick();
                 }
-                this.effects[effect].tick();
             }
         }
 
@@ -396,6 +397,11 @@ var Champion = {
         if(this.stats.attackspeed.current > 2.5) {
             this.stats.attackspeed.current = 2.5;
         }
+
+        if(1/this.stats.attackspeed.current < this.attacktimer) {
+            this.attacktimer = 1/this.stats.attackspeed.current;
+        }
+
         this.stats.attackrange.current = this.stats.attackrange.base + this.stats.attackrange.flatbonus;
 
         this.stats.armor.current = (this.stats.armor.base + this.stats.armor.perlevel*this.stats.level + this.stats.armor.flatbonus)*(1+this.stats.armor.percentbonus);
@@ -462,7 +468,7 @@ var Champion = {
         this.crowdcontrol.cantAttack = 0;
         this.crowdcontrol.cantCast = 0;
         this.slows = {};
-        this.healingreduced = false;
+        this.healingeffect = 1;
         this.targetable = true;
         this.attacktimer = 0;
 

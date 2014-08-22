@@ -162,7 +162,7 @@ var Target = {
         enemySpellCast: {}
     },
     //Crowd control is listed by restricted actions as the key and duration as the value
-    slows: [],
+    slows: {},
     crowdcontrol: {
         cantMove: 0,
         cantAttack: 0,
@@ -174,7 +174,7 @@ var Target = {
         physical: 0,
         magic: 0
     },
-    healingreduced: false,
+    healingeffect: 1,
     targetable: true,
     attacktimer: 0,
 
@@ -294,9 +294,7 @@ var Target = {
     },
 
     heal: function(amount) {
-        if (this.healingreduced) {
-            amount = amount / 2;
-        }
+        amount *= this.healingeffect;
 
         this.stats.health.current = Math.min(this.stats.health.current + amount, this.stats.health.total);
 
@@ -401,7 +399,7 @@ var Target = {
         this.crowdcontrol.cantAttack = 0;
         this.crowdcontrol.cantCast = 0;
         this.slows = {};
-        this.healingreduced = false;
+        this.healingeffect = 1;
         this.targetable = true;
         this.attacktimer = 0;
 
@@ -427,9 +425,10 @@ var Target = {
         for (var effect in this.effects) {
             if (this.effects.hasOwnProperty(effect)) {
                 this.effects[effect].duration -= TIME_STEP;
-                this.effects[effect].tick();
                 if (this.effects[effect].duration <= 0) {
                     this.removeEffect(effect);
+                } else {
+                    this.effects[effect].tick();
                 }
             }
         }

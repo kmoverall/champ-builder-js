@@ -8,8 +8,8 @@ function simulate() {
 
     var result = {
         composite: [[0, 0], [50, 25], [100, 100]],
-        damage: [[0, 0]],
-        durability: [[0, 100]],
+        damage: [],
+        durability: [],
         disruption: [[0, 0], [50, 25], [100, 100]],
         chasedown: [[0, 0], [50, 25], [100, 100]],
         escape: [[0, 0], [50, 25], [100, 100]]
@@ -29,7 +29,7 @@ function simulate() {
     var init_targethealth;
     var init_champhealth;
 
-    //This is a stupid hack due to the slows arrays sometimes deciding that they didn't feel like being arrays when asked to do array things
+    //This is a stupid hack that I'm not 100% sure is needed anymore
     Target.slows = {};
     Champion.slows = {};
     Target.effects = {};
