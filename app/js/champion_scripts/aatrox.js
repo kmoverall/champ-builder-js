@@ -4,11 +4,24 @@
 var Scripts = {
     load: function() {
         Champion.manaless = true;
+
+        Champion.addEffect(this.effects.BloodWell);
+
         /*Champion.effects.BloodWellRevive = this.BloodWellRevive;
         Champion.effects.BloodWell = this.BloodWell;
         Champion.effects.BloodThirst = this.BloodThirst;*/
         this.Q.range = Champion.data.spells[0].range[this.Q.rank-1];
         Champion.skills.push(this.Q);
+
+        //Champion.skills.push(this.W);
+        //Initialize Blood Thirst Numbers
+        var baseheal = Champion.data.spells[1].effect[2][this.W.rank-1];
+        var scalingstat = Champion.data.spells[1].vars[0]["link"];
+        var scalingheal = Champion.data.spells[1].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
+        this.events.BloodThirst.strength = baseheal + scalingheal;
+        this.events.BloodThirst.boost = (100 + Champion.data.spells[1].effect[0][this.W.rank-1]) / 100;
+        Champion.addEffect(this.effects.BloodThirst);
+        Champion.skills.push(this.W);
 
         this.E.range = Champion.data.spells[2].range[this.E.rank-1];
         Champion.skills.push(this.E);
@@ -53,17 +66,64 @@ var Scripts = {
         }
     },
     W: {
-        name: "Blades of Torment",
+        name: "Blood Thirst/Blood Price",
         rank: 5,
         range: 0,
         cdtimer: 0,
         aoe: true,
         moves: false,
+        toggledOn: false,
         willCast: function() {
+            var basedamage = Champion.data.spells[1].effect[1][this.rank-1];
+            var scalingstatdamage = Champion.data.spells[1].vars[1]["link"];
+            var scalingdamage = Champion.data.spells[1].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstatdamage][0]] [STAT_LINK_MAP[scalingstatdamage][1]];
 
+            var baseheal = Champion.data.spells[1].effect[2][this.rank-1];
+            var scalingstatheal = Champion.data.spells[1].vars[0]["link"];
+            var scalingheal = Champion.data.spells[1].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstatheal][0]] [STAT_LINK_MAP[scalingstatheal][1]];
+
+            var pcntdmg;
+            var pcntheal;
+
+            //Will only switch to blood price if damage dealt as percentage of target's health is greater than amount healed as percentage of Aatrox's health and vice versa
+            pcntdmg = (basedamage + scalingdamage);
+            pcntdmg *= 100 / (100 + Target.stats.armor.current * (1 - Champion.stats.armorpenetration.percent) - Champion.stats.armorpenetration.flat);
+            pcntdmg /= Target.stats.health.total;
+            pcntdmg -= ((basedamage + scalingdamage) / 4) / Champion.stats.health.total;
+
+            pcntheal = (baseheal + scalingheal) / Champion.stats.health.total;
+
+            if (Champion.stats.health.current < Champion.stats.health.total / 2) {
+                pcntheal *= (100 + Champion.data.spells[1].effect[0][this.rank-1]) / 100;
+            }
+            //The last ternary operator bit is a tricky way to do a XOR.
+            //It toggles if damage would be greater than healing and skill is toggled off
+            //OR if damage would be less than healing and skill is toggled on
+            return this.cdtimer <= 0 && !Champion.crowdcontrol.cantCast && (pcntdmg > pcntheal ? !this.toggledOn : this.toggledOn);
         },
         cast: function() {
+            this.toggledOn = !this.toggledOn;
+            if (this.toggledOn) {
+                var basedamage = Champion.data.spells[1].effect[1][this.rank-1];
+                var scalingstatdamage = Champion.data.spells[1].vars[1]["link"];
+                var scalingdamage = Champion.data.spells[1].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstatdamage][0]] [STAT_LINK_MAP[scalingstatdamage][1]];
+                Scripts.events.BloodPrice.strength = basedamage + scalingdamage;
+                Scripts.events.BloodPrice.cost = (basedamage + scalingdamage) / 4;
 
+                Champion.removeEffect(Scripts.effects.BloodThirst);
+                Champion.addEffect(Scripts.effects.BloodPrice);
+            } else {
+                var baseheal = Champion.data.spells[1].effect[2][this.rank-1];
+                var scalingstatheal = Champion.data.spells[1].vars[0]["link"];
+                var scalingheal = Champion.data.spells[1].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstatheal][0]] [STAT_LINK_MAP[scalingstatheal][1]];
+
+                Scripts.events.BloodThirst.strength = baseheal + scalingheal;
+                Scripts.events.BloodThirst.boost = (100 + Champion.data.spells[1].effect[0][this.rank-1]) / 100;
+
+                Champion.removeEffect(Scripts.effects.BloodPrice);
+                Champion.addEffect(Scripts.effects.BloodThirst);
+            }
+            this.cdtimer = Champion.data.spells[2].cooldown[this.rank-1]*(1-Champion.stats.cdr);
         }
     },
     E: {
@@ -92,7 +152,8 @@ var Scripts = {
             scalingstat[1] = Champion.data.spells[2].vars[1]["link"];
             var scalingdamage = Champion.data.spells[2].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat[0]][0]] [STAT_LINK_MAP[scalingstat[0]][1]];
             scalingdamage += Champion.data.spells[2].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat[1]][0]] [STAT_LINK_MAP[scalingstat[1]][1]];
-            Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
+            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
+            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
 
             //Apply CC
             Scripts.effects.BladesOfTorment.duration = Champion.data.spells[2].effect[3][this.rank - 1] * (1-Champion.stats.tenacity);
@@ -120,7 +181,8 @@ var Scripts = {
             var basedamage = Champion.data.spells[3].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[3].vars[0]["link"];
             var scalingdamage = Champion.data.spells[3].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
-            Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
+            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
+            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
 
             Scripts.effects.Massacre.duration = Champion.data.spells[3].effect[0][this.rank - 1];
             Scripts.effects.Massacre.speed = Champion.data.spells[3].effect[2][this.rank - 1] / 100;
@@ -173,50 +235,112 @@ var Scripts = {
                 delete Target.slows[name];
             }
         },
-        BloodWellRevive: {
-            name: "Blood Well Revive",
-            debuff: false,
-            cleansable: false,
-            duration: 1000000,
-            apply: function () {
-            },
-            tick: function () {
-            },
-            remove: function () {
-            }
-        },
         BloodWell: {
             name: "Blood Well",
             debuff: false,
             cleansable: false,
-            duration: 0,
+            duration: 1000000,
+            asbase: 0,
+            asboost: 0,
+            cdtimer: 0,
             apply: function () {
+                this.asbase = 0.006 + Math.floor((Champion.stats.level - 1) / 3) * 0.001;
+                this.asboost = this.asbase * (Champion.stats.mana.current / Champion.stats.mana.total) * 50;
+                Champion.stats.attackspeed.percentbonus += this.asboost;
+                Champion.registerEvent(Scripts.events.BloodWell, "postDamageTaken");
             },
             tick: function () {
+                //Recalculate and store attack speed buff
+                var newboost = this.asbase * (Champion.stats.mana.current / Champion.stats.mana.total) * 50;
+                Champion.stats.attackspeed.percentbonus += newboost - this.asboost;
+                this.asboost = newboost;
+
+                //If blood well is on cooldown, countdown until the revive event can be re-registered
+                if (this.cdtimer > 0) {
+                    this.cdtimer -= TIME_STEP;
+                    if(this.cdtimer <= 0) {
+                        Champion.registerEvent(Scripts.events.BloodWell, "postDamageTaken");
+                    }
+                }
             },
             remove: function () {
+                Champion.stats.attackspeed.percentbonus -= this.asboost;
+                Champion.removeEvent(Scripts.events.BloodWell, "postDamageTaken");
+            }
+        },
+        BloodWellRevive: {
+            name: "Blood Well Resurrection",
+            debuff: false,
+            cleansable: false,
+            duration: 3,
+            healamount: 0,
+            apply: function () {
+                //Cleanse Debuffs
+                for(var effect in Champion.effects) {
+                    if (Champion.effects.hasOwnProperty(effect) && Champion.effects[effect].debuff) {
+                        Champion.effects[effect].remove();
+                    }
+                }
+                Champion.crowdcontrol.cantMove = true;
+                Champion.crowdcontrol.cantAttack = true;
+                Champion.crowdcontrol.cantCast = true;
+                Champion.targetable = false;
+                this.healamount = Champion.stats.mana.current;
+                Champion.removeEvent(Scripts.events.BloodWell, "postDamageTaken");
+            },
+            tick: function () {
+                //Ensure that Aatrox cannot attack move or cast during revive
+                Champion.crowdcontrol.cantMove = true;
+                Champion.crowdcontrol.cantAttack = true;
+                Champion.crowdcontrol.cantCast = true;
+                Champion.targetable = false;
+
+                if(this.duration % 0.25 < (this.duration - TIME_STEP)% 0.25) {
+                    Champion.heal((10.5 + 15.75*Champion.stats.level + this.healamount) / 12);
+                    Champion.stats.mana.current -= this.healamount / 12;
+                }
+            },
+            remove: function () {
+                Log += "\t"+ Champion.data.name +" comes out of Blood Well\n";
+                Champion.crowdcontrol.cantMove = false;
+                Champion.crowdcontrol.cantAttack = false;
+                Champion.crowdcontrol.cantCast = false;
+                Champion.targetable = true;
+                Scripts.effects.BloodWell.cdtimer = 225;
             }
         },
         BloodThirst: {
+            name: "Blood Thirst",
             debuff: false,
             cleansable: false,
-            duration: 0,
+            duration: 1000000,
             apply: function () {
+                Scripts.events.BloodPrice.stacks = Scripts.events.BloodThirst.stacks;
+                Log += "\t"+ Champion.data.name +" switches to Blood Thirst\n";
+                Champion.registerEvent(Scripts.events.BloodThirst, "autoAttack");
             },
             tick: function () {
             },
             remove: function () {
+                Log += "\t"+ Champion.data.name +" loses Blood Thirst\n";
+                Champion.removeEvent(Scripts.events.BloodThirst, "autoAttack");
             }
         },
         BloodPrice: {
+            name: "Blood Price",
             debuff: false,
             cleansable: false,
-            duration: 0,
+            duration: 1000000,
             apply: function () {
+                Scripts.events.BloodPrice.stacks = Scripts.events.BloodThirst.stacks;
+                Log += "\t"+ Champion.data.name +" switches to Blood Price\n";
+                Champion.registerEvent(Scripts.events.BloodPrice, "autoAttack");
             },
             tick: function () {
             },
             remove: function () {
+                Log += "\t"+ Champion.data.name +" loses Blood Price\n";
+                Champion.removeEvent(Scripts.events.BloodPrice, "autoAttack");
             }
         },
         Massacre: {
@@ -244,6 +368,57 @@ var Scripts = {
         }
     },
     events: {
+        BloodThirst: {
+            name: "Blood Thirst On Hit",
+            stacks: 0,
+            strength: 0,
+            boost: 0,
+            triggerEvent: function (arguments) {
+                if(this.stacks == 2) {
+                    Log += "\t"+ Champion.data.name +" procs Blood Thirst\n";
+                    this.stacks = 0;
+                    if (Champion.stats.health.current < Champion.stats.health.total * 0.5) {
+                        Champion.heal(this.strength * this.boost)
+                    } else {
+                        Champion.heal(this.strength);
+                    }
+                } else {
+                    this.stacks++;
+                }
+            }
+        },
+        BloodPrice: {
+            name: "Blood Price On Hit",
+            stacks: 0,
+            strength: 0,
+            cost: 0,
+            triggerEvent: function (arguments) {
+                if(this.stacks == 2) {
+                    Log += "\t"+ Champion.data.name +" procs Blood Price for "+this.cost+" health\n";
+                    if (Champion.stats.health.current > this.cost) {
+                        this.stacks = 0;
+                        Target.takeDamage(this.strength, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.OTHER);
+                        Champion.stats.health.current -= this.cost;
 
+                        //Store in the blood well
+                        Champion.stats.mana.current = Math.min(Champion.stats.mana.current + this.cost, Champion.stats.mana.total);
+                    }
+                } else {
+                    this.stacks++;
+                }
+            }
+        },
+        BloodWell: {
+            name: "Blood Well Revive",
+            cdtimer: 0,
+            triggerEvent: function (arguments) {
+                if(Champion.stats.health.current <= 0) {
+                    Log += "\t"+ Champion.data.name +" activates Blood Well\n";
+                    Champion.stats.health.current += arguments[0];
+                    Champion.addEffect(Scripts.effects.BloodWellRevive);
+                    Champion.removeEvent(this, "postDamageTaken");
+                }
+            }
+        }
     }
 };

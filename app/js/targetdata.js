@@ -267,11 +267,11 @@ var Target = {
             remaining_damage = 0;
         }
 
-        this.processEvents("postDamageTaken", [damage, type, source]);
-
-
         //Apply damage to current health
         this.stats.health.current -= remaining_damage;
+
+        this.processEvents("postDamageTaken", [damage, type, source]);
+
         return damage;
     },
 
@@ -426,7 +426,7 @@ var Target = {
             if (this.effects.hasOwnProperty(effect)) {
                 this.effects[effect].duration -= TIME_STEP;
                 if (this.effects[effect].duration <= 0) {
-                    this.removeEffect(effect);
+                    this.removeEffect(this.effects[effect]);
                 } else {
                     this.effects[effect].tick();
                 }
@@ -440,13 +440,13 @@ var Target = {
         this.events[trigger][event.name] = event;
     },
 
-    removeEvent: function(eventname, trigger) {
-        delete this.events[trigger][eventname];
+    removeEvent: function(event, trigger) {
+        delete this.events[trigger][event.name];
     },
 
-    removeEffect: function(effectname) {
-        this.effects[effectname].remove();
-        delete this.effects[effectname];
+    removeEffect: function(effect) {
+        this.effects[effect.name].remove();
+        delete this.effects[effect.name];
     },
 
     //Adds an Effect and calls any functions required to initialize the effect

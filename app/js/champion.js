@@ -181,7 +181,7 @@ var Champion = {
         switch(type) {
             case DAMAGE_TYPES.PHYSICAL:
                 //apply armor
-                effective_armor = this.stats.armor.current * (1 - Champion.stats.armorpenetration.percent) - Champion.stats.armorpenetration.flat;
+                effective_armor = this.stats.armor.current * (1 - Target.stats.armorpenetration.percent) - Target.stats.armorpenetration.flat;
                 if (effective_armor >= 0) {
                     damage *= 100 / (100 + effective_armor);
                 }
@@ -205,7 +205,7 @@ var Champion = {
 
             case DAMAGE_TYPES.MAGIC:
                 //apply magic resistance
-                effective_mr = this.stats.magicresistance.current * (1 - Champion.stats.magicpenetration.percent) - Champion.stats.magicpenetration.flat;
+                effective_mr = this.stats.magicresistance.current * (1 - Target.stats.magicpenetration.percent) - Target.stats.magicpenetration.flat;
                 if (effective_mr >= 0) {
                     damage *= 100 / (100 + effective_mr);
                 }
@@ -253,10 +253,11 @@ var Champion = {
             remaining_damage = 0;
         }
 
-        this.processEvents("postDamageTaken", [damage, type, source]);
-
         //Apply damage to current health
         this.stats.health.current -= remaining_damage;
+
+        this.processEvents("postDamageTaken", [damage, type, source]);
+
         return damage;
     },
 
@@ -311,13 +312,11 @@ var Champion = {
                 this.skills[skill].cdtimer -= TIME_STEP;
             }
         }
-        console.log(this.effects);
-        console.log(SimTime);
         for (var effect in this.effects) {
             if (this.effects.hasOwnProperty(effect)) {
                 this.effects[effect].duration -= TIME_STEP;
                 if (this.effects[effect].duration <= 0) {
-                    this.removeEffect(effect);
+                    this.removeEffect(this.effects[effect]);
                 } else {
                     this.effects[effect].tick();
                 }
@@ -379,6 +378,11 @@ var Champion = {
         this.stats.health.current += Math.max(this.stats.health.total - oldHealth, 0);
 
         oldMana = this.stats.mana.total;
+        if (this.manaless) {
+            this.stats.mana.flatbonus = 0;
+            this.stats.mana.percentbonus = 0;
+        }
+
         this.stats.mana.total = (this.stats.mana.base + this.stats.mana.perlevel*this.stats.level + this.stats.mana.flatbonus)*(1+this.stats.mana.percentbonus);
         this.stats.manaregen.current = (this.stats.manaregen.base + this.stats.manaregen.perlevel*this.stats.level + this.stats.manaregen.flatbonus)*(1+this.stats.manaregen.percentbonus);
         if (this.stats.mana.current > this.stats.mana.total) {
@@ -387,6 +391,7 @@ var Champion = {
         else if (this.stats.mana.current < 0) {
             this.stats.mana.current = 0;
         }
+
         //Handle max mana changes
         this.stats.mana.current += Math.max(this.stats.mana.total - oldMana, 0);
 
@@ -479,17 +484,21 @@ var Champion = {
     },
 
     //Adds an event to the appropriate array based on its trigger
-    rregisterEvent: function(event, trigger) {
+    registerEvent: function(event, trigger) {
         this.events[trigger][event.name] = event;
     },
 
-    removeEvent: function(eventname, trigger) {
-        delete this.events[trigger][eventname];
+    removeEvent: function(event, trigger) {
+        if (typeof this.events[trigger][event.name] !== 'undefined') {
+            delete this.events[trigger][event.name];
+        }
     },
 
-    removeEffect: function(effectname) {
-        this.effects[effectname].remove();
-        delete this.effects[effectname];
+    removeEffect: function(effect) {
+        if (typeof this.effects[effect.name] !== 'undefined') {
+            this.effects[effect.name].remove();
+            delete this.effects[effect.name];
+        }
     },
 
     //Adds an Effect and calls any functions required to initialize the effect

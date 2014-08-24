@@ -29,12 +29,6 @@ function simulate() {
     var init_targethealth;
     var init_champhealth;
 
-    //This is a stupid hack that I'm not 100% sure is needed anymore
-    Target.slows = {};
-    Champion.slows = {};
-    Target.effects = {};
-    Champion.effects = {};
-
     for (var time = 0; time <= MAX_TIME; time += TIME_STEP) {
         Log += time+": ";
         //A shitty way to allow other scopes access to the current time in the simulation

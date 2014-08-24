@@ -18,6 +18,12 @@ $(function() {
             Target.reset();
             Champion.reset();
 
+            //This is a stupid hack that I'm not 100% sure is needed anymore
+            Target.slows = {};
+            Champion.slows = {};
+            Target.effects = {};
+            Champion.effects = {};
+
             Scripts.load();
 
             console.log("loaded champ scripts: " + Champion.scriptlocation);
