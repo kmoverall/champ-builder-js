@@ -267,19 +267,21 @@ var Champion = {
 
     //Champion attempts to act, prioritizing skills before autoattacks
     act: function() {
+        if (Distance <= this.stats.attackrange.current && !this.crowdcontrol.cantAttack && Target.targetable && !this.isAnimating() && this.attacktimer <= 0) {
+            this.animation.timeleft = 0.1;
+            this.animation.action = "autoattack";
+            Log += "\t" + this.data.name + " begins attacking\n";
+        }
         for (var skill in this.skills) {
             if (this.skills.hasOwnProperty(skill)) {
                 if (this.skills[skill].willCast() && this.skills[skill].casttime != 0) {
                     this.animation.timeleft = (this.skills[skill].casttime);
                     this.animation.action = skill;
+                    Log += "\t" + this.data.name + " begins casting " + this.skills[skill].name + "\n";
                 } else if (this.skills[skill].willCast()) {
                     this.skills[skill].cast();
                 }
             }
-        }
-        if (Distance <= this.stats.attackrange.current && !this.crowdcontrol.cantAttack && Target.targetable && !this.isAnimating() && this.attacktimer <= 0) {
-            this.animation.timeleft = 0.1;
-            this.animation.action = "autoattack";
         }
     },
 

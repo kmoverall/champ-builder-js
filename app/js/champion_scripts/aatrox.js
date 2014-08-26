@@ -278,6 +278,8 @@ var Scripts = {
                         Champion.effects[effect].remove();
                     }
                 }
+                Champion.animation.timeleft = null;
+                Champion.animation.action = null;
                 Champion.crowdcontrol.cantMove = true;
                 Champion.crowdcontrol.cantAttack = true;
                 Champion.crowdcontrol.cantCast = true;
@@ -287,6 +289,8 @@ var Scripts = {
             },
             tick: function () {
                 //Ensure that Aatrox cannot attack move or cast during revive
+                Champion.animation.timeleft = null;
+                Champion.animation.action = null;
                 Champion.crowdcontrol.cantMove = true;
                 Champion.crowdcontrol.cantAttack = true;
                 Champion.crowdcontrol.cantCast = true;
