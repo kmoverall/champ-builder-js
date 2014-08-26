@@ -177,6 +177,10 @@ var Target = {
     healingeffect: 1,
     targetable: true,
     attacktimer: 0,
+    animation: {
+        timeleft: null,
+        action: null
+    },
 
     takeDamage: function(damage, type, source) {
         //Triggers effects based on current damage source
@@ -275,22 +279,47 @@ var Target = {
         return damage;
     },
 
-    autoAttack: function() {
-        if (Distance <= this.stats.attackrange.current && this.crowdcontrol.cantAttack <= 0 && Champion.targetable) {
-            Log += "\tTarget attacks\n";
-
-            var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance * (this.stats.critical.damage - 1));
-            this.processEvents("preDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
-            damage = Champion.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
-            //Trigger all effects that occur on autoattacks
-            this.processEvents("autoAttack", [damage]);
-            this.processEvents("postDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
-
-            this.heal(damage * this.stats.lifesteal);
-
-            //reset attack timer
-            this.attacktimer = 1 / this.stats.attackspeed.current;
+    //Champion attempts to act, prioritizing skills before autoattacks
+    act: function() {
+        //TODO: Implement Target skills
+        /*for (var skill in this.skills) {
+            if (this.skills.hasOwnProperty(skill)) {
+                if (this.skills[skill].willCast() && this.skills[skill].casttime != 0) {
+                    this.animation.timeleft = (this.skills[skill].casttime);
+                    this.animation.action = skill;
+                } else if (this.skills[skill].willCast()) {
+                    this.skills[skill].cast();
+                }
+            }
+        }*/
+        if (Distance <= this.stats.attackrange.current && !this.crowdcontrol.cantAttack && Champion.targetable && !this.isAnimating() && this.attacktimer <= 0) {
+            this.animation.timeleft = 0.1;
+            this.animation.action = "autoattack";
         }
+    },
+
+    isAnimating: function() {
+        if (this.animation.timeleft != null) {
+            return this.animation.timeleft > 0;
+        } else {
+            return false;
+        }
+    },
+
+    autoAttack: function() {
+        Log += "\tTarget attacks\n";
+
+        var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance * (this.stats.critical.damage - 1));
+        this.processEvents("preDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
+        damage = Champion.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
+        //Trigger all effects that occur on autoattacks
+        this.processEvents("autoAttack", [damage]);
+        this.processEvents("postDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
+
+        this.heal(damage * this.stats.lifesteal);
+
+        //reset attack timer
+        this.attacktimer = (1 / this.stats.attackspeed.current) - 0.1;
     },
 
     heal: function(amount) {
@@ -432,6 +461,23 @@ var Target = {
                 }
             }
         }
+
+        //If animation has ended, use the skill or autoattack
+        if (this.animation.timeleft != null) {
+            this.animation.timeleft -= TIME_STEP;
+            if (this.animation.timeleft <= 0) {
+                if (this.animation.action == "autoattack") {
+                    this.autoAttack();
+                } else {
+                    this.skills[this.animation.action].cast();
+                }
+                this.animation.timeleft = null;
+                this.animation.action = null;
+            }
+        }
+
+        //Attempt to use attacks or autoattacks
+        this.act();
 
         this.calculateStats();
     },

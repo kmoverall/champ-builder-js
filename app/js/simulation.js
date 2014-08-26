@@ -46,30 +46,6 @@ function simulate() {
         init_targethealth = Target.stats.health.current;
         init_champhealth = Champion.stats.health.current;
 
-        //--------------------------------------------
-        // Combat Processing
-        //--------------------------------------------
-
-        //Champion auto attack
-        if(Champion.attacktimer <= 0 && Target.targetable && Champion.crowdcontrol.cantAttack <= 0) {
-            Champion.autoAttack();
-        }
-
-        //Target auto attack
-        if(Target.attacktimer <= 0 && Champion.targetable && Target.crowdcontrol.cantAttack <= 0) {
-            Target.autoAttack();
-        }
-
-        //Champion skills
-        for (var skill in Champion.skills) {
-            if (Champion.skills.hasOwnProperty(skill)) {
-                Champion.useSkill(skill);
-            }
-        }
-
-        //--------------------------------------------
-        // Post-Combat Processsing
-        //--------------------------------------------
         Target.tickDown();
         Champion.tickDown();
 

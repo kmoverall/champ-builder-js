@@ -7,11 +7,14 @@ var Scripts = {
 
         Champion.addEffect(this.effects.BloodWell);
 
-        /*Champion.effects.BloodWellRevive = this.BloodWellRevive;
-        Champion.effects.BloodWell = this.BloodWell;
-        Champion.effects.BloodThirst = this.BloodThirst;*/
         this.Q.range = Champion.data.spells[0].range[this.Q.rank-1];
         Champion.skills.push(this.Q);
+
+        this.R.range = Champion.data.spells[3].range[this.R.rank-1];
+        Champion.skills.push(this.R);
+
+        this.E.range = Champion.data.spells[2].range[this.E.rank-1];
+        Champion.skills.push(this.E);
 
         //Champion.skills.push(this.W);
         //Initialize Blood Thirst Numbers
@@ -22,21 +25,16 @@ var Scripts = {
         this.events.BloodThirst.boost = (100 + Champion.data.spells[1].effect[0][this.W.rank-1]) / 100;
         Champion.addEffect(this.effects.BloodThirst);
         Champion.skills.push(this.W);
-
-        this.E.range = Champion.data.spells[2].range[this.E.rank-1];
-        Champion.skills.push(this.E);
-
-        this.R.range = Champion.data.spells[3].range[this.R.rank-1];
-        Champion.skills.push(this.R);
     },
     Q: {
         name: "Dark Flight",
         rank: 5,
         range: 0,
         cdtimer: 0,
+        casttime: 0.25,
         aoe: true,
         willCast: function() {
-            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.crowdcontrol.cantMove;
+            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.crowdcontrol.cantMove && !Champion.isAnimating();
         },
         cast: function() {
 
@@ -70,8 +68,8 @@ var Scripts = {
         rank: 5,
         range: 0,
         cdtimer: 0,
+        casttime: 0,
         aoe: true,
-        moves: false,
         toggledOn: false,
         willCast: function() {
             var basedamage = Champion.data.spells[1].effect[1][this.rank-1];
@@ -96,10 +94,9 @@ var Scripts = {
             if (Champion.stats.health.current < Champion.stats.health.total / 2) {
                 pcntheal *= (100 + Champion.data.spells[1].effect[0][this.rank-1]) / 100;
             }
-            //The last ternary operator bit is a tricky way to do a XOR.
             //It toggles if damage would be greater than healing and skill is toggled off
             //OR if damage would be less than healing and skill is toggled on
-            return this.cdtimer <= 0 && !Champion.crowdcontrol.cantCast && (pcntdmg > pcntheal ? !this.toggledOn : this.toggledOn);
+            return this.cdtimer <= 0 && !Champion.crowdcontrol.cantCast && ((pcntdmg > pcntheal && !this.toggledOn) || (pcntdmg < pcntheal && this.toggledOn));
         },
         cast: function() {
             this.toggledOn = !this.toggledOn;
@@ -123,7 +120,7 @@ var Scripts = {
                 Champion.removeEffect(Scripts.effects.BloodPrice);
                 Champion.addEffect(Scripts.effects.BloodThirst);
             }
-            this.cdtimer = Champion.data.spells[2].cooldown[this.rank-1]*(1-Champion.stats.cdr);
+            this.cdtimer = Champion.data.spells[1].cooldown[this.rank-1]*(1-Champion.stats.cdr);
         }
     },
     E: {
@@ -131,10 +128,10 @@ var Scripts = {
         rank: 5,
         range: 0,
         cdtimer: 0,
+        casttime: 0.25,
         aoe: true,
-        moves: false,
         willCast: function() {
-            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast;
+            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.isAnimating();
         },
         cast: function() {
             //Apply health cost
@@ -170,10 +167,10 @@ var Scripts = {
         rank: 3,
         range: 0,
         cdtimer: 0,
+        casttime: 0.25,
         aoe: true,
-        moves: false,
         willCast: function() {
-            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast;
+            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.isAnimating();
         },
         cast: function() {
             Log += "\t" + Champion.data.name + " casts Massacre";

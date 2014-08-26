@@ -36,8 +36,8 @@
       <file leaf-file-name="simulation.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/js/simulation.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="29.26923" vertical-offset="881" max-vertical-offset="2145">
-              <caret line="8" column="18" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
+            <state vertical-scroll-proportion="2.1538463" vertical-offset="761" max-vertical-offset="1785">
+              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -66,31 +66,26 @@
       <file leaf-file-name="targetdata.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/js/targetdata.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-114.96154" vertical-offset="1031" max-vertical-offset="4800">
-              <caret line="268" column="0" selection-start-line="268" selection-start-column="0" selection-end-line="268" selection-end-column="0" />
+            <state vertical-scroll-proportion="-12.384615" vertical-offset="2543" max-vertical-offset="6330">
+              <caret line="286" column="47" selection-start-line="286" selection-start-column="39" selection-end-line="286" selection-end-column="47" />
               <folding>
-                <element signature="e#8379#9274#0" expanded="false" />
-                <element signature="e#9304#9532#0" expanded="false" />
-                <element signature="e#9566#14697#0" expanded="false" />
-                <element signature="e#14722#15599#0" expanded="false" />
-                <element signature="e#15627#16655#0" expanded="false" />
+                <element signature="e#4691#8418#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="champion.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="champion.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/js/champion.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7826087" vertical-offset="4029" max-vertical-offset="5310">
-              <caret line="490" column="43" selection-start-line="490" selection-start-column="43" selection-end-line="490" selection-end-column="43" />
+            <state vertical-scroll-proportion="-9.227273" vertical-offset="2309" max-vertical-offset="4845">
+              <caret line="266" column="0" selection-start-line="266" selection-start-column="0" selection-end-line="266" selection-end-column="0" />
               <folding>
-                <element signature="e#4160#7568#0" expanded="false" />
-                <element signature="e#7636#8604#0" expanded="false" />
-                <element signature="e#8678#8925#0" expanded="false" />
-                <element signature="e#8997#9098#0" expanded="false" />
-                <element signature="e#9218#10246#0" expanded="false" />
-                <element signature="e#10343#11846#0" expanded="false" />
+                <element signature="e#4229#7637#0" expanded="false" />
+                <element signature="e#9595#9842#0" expanded="false" />
+                <element signature="e#11688#13191#0" expanded="false" />
+                <element signature="e#13308#18712#0" expanded="false" />
+                <element signature="e#18785#19712#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -100,7 +95,7 @@
         <entry file="file://$PROJECT_DIR$/app/js/constants.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="885">
-              <caret line="52" column="20" selection-start-line="52" selection-start-column="20" selection-end-line="52" selection-end-column="20" />
+              <caret line="52" column="19" selection-start-line="52" selection-start-column="19" selection-end-line="52" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -116,11 +111,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="aatrox.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="aatrox.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/js/champion_scripts/aatrox.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3214" max-vertical-offset="6435">
-              <caret line="258" column="39" selection-start-line="258" selection-start-column="39" selection-end-line="258" selection-end-column="39" />
+            <state vertical-scroll-proportion="0.9959142" vertical-offset="0" max-vertical-offset="6390">
+              <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -160,13 +155,13 @@
         <option value="$PROJECT_DIR$/app/js/championdata.js" />
         <option value="$PROJECT_DIR$/app/js/targetpresets.json" />
         <option value="$PROJECT_DIR$/app/index.html" />
-        <option value="$PROJECT_DIR$/app/js/constants.js" />
         <option value="$PROJECT_DIR$/app/js/globals.js" />
-        <option value="$PROJECT_DIR$/app/js/simulation.js" />
         <option value="$PROJECT_DIR$/app/js/graph.js" />
+        <option value="$PROJECT_DIR$/app/js/constants.js" />
+        <option value="$PROJECT_DIR$/app/js/simulation.js" />
         <option value="$PROJECT_DIR$/app/js/targetdata.js" />
-        <option value="$PROJECT_DIR$/app/js/champion_scripts/aatrox.js" />
         <option value="$PROJECT_DIR$/app/js/champion.js" />
+        <option value="$PROJECT_DIR$/app/js/champion_scripts/aatrox.js" />
       </list>
     </option>
   </component>
@@ -372,7 +367,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
@@ -417,11 +412,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="135" max-vertical-offset="585">
           <caret line="9" column="40" selection-start-line="9" selection-start-column="40" selection-end-line="9" selection-end-column="40" />
           <folding>
-            <element signature="e#8379#9274#0" expanded="false" />
-            <element signature="e#9304#9532#0" expanded="false" />
-            <element signature="e#9566#14697#0" expanded="false" />
-            <element signature="e#14722#15599#0" expanded="false" />
-            <element signature="e#15627#16655#0" expanded="false" />
+            <element signature="e#4691#8418#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -478,11 +469,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="135" max-vertical-offset="555">
           <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="11" selection-end-column="7" />
           <folding>
-            <element signature="e#8379#9274#0" expanded="false" />
-            <element signature="e#9304#9532#0" expanded="false" />
-            <element signature="e#9566#14697#0" expanded="false" />
-            <element signature="e#14722#15599#0" expanded="false" />
-            <element signature="e#15627#16655#0" expanded="false" />
+            <element signature="e#4691#8418#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -539,11 +526,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="135" max-vertical-offset="555">
           <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="11" selection-end-column="7" />
           <folding>
-            <element signature="e#8379#9274#0" expanded="false" />
-            <element signature="e#9304#9532#0" expanded="false" />
-            <element signature="e#9566#14697#0" expanded="false" />
-            <element signature="e#14722#15599#0" expanded="false" />
-            <element signature="e#15627#16655#0" expanded="false" />
+            <element signature="e#4691#8418#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -592,11 +575,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="120" max-vertical-offset="510">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding>
-            <element signature="e#8379#9274#0" expanded="false" />
-            <element signature="e#9304#9532#0" expanded="false" />
-            <element signature="e#9566#14697#0" expanded="false" />
-            <element signature="e#14722#15599#0" expanded="false" />
-            <element signature="e#15627#16655#0" expanded="false" />
+            <element signature="e#4691#8418#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -738,25 +717,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/js/globals.js">
+    <entry file="file://$PROJECT_DIR$/app/js/simulation.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="165">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        <state vertical-scroll-proportion="2.1538463" vertical-offset="761" max-vertical-offset="1785">
+          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/js/targetdata.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-114.96154" vertical-offset="1031" max-vertical-offset="4800">
-          <caret line="268" column="0" selection-start-line="268" selection-start-column="0" selection-end-line="268" selection-end-column="0" />
-          <folding>
-            <element signature="e#8379#9274#0" expanded="false" />
-            <element signature="e#9304#9532#0" expanded="false" />
-            <element signature="e#9566#14697#0" expanded="false" />
-            <element signature="e#14722#15599#0" expanded="false" />
-            <element signature="e#15627#16655#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -768,42 +733,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/js/simulation.js">
+    <entry file="file://$PROJECT_DIR$/app/js/targetdata.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="29.26923" vertical-offset="881" max-vertical-offset="2145">
-          <caret line="8" column="18" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/js/champion_scripts/aatrox.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3214" max-vertical-offset="6435">
-          <caret line="258" column="39" selection-start-line="258" selection-start-column="39" selection-end-line="258" selection-end-column="39" />
-          <folding />
+        <state vertical-scroll-proportion="-12.384615" vertical-offset="2543" max-vertical-offset="6330">
+          <caret line="286" column="47" selection-start-line="286" selection-start-column="39" selection-end-line="286" selection-end-column="47" />
+          <folding>
+            <element signature="e#4691#8418#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/js/constants.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="855">
-          <caret line="52" column="20" selection-start-line="52" selection-start-column="20" selection-end-line="52" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="885">
+          <caret line="52" column="19" selection-start-line="52" selection-start-column="19" selection-end-line="52" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/js/globals.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="165">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/js/champion.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7826087" vertical-offset="4029" max-vertical-offset="5310">
-          <caret line="490" column="43" selection-start-line="490" selection-start-column="43" selection-end-line="490" selection-end-column="43" />
+        <state vertical-scroll-proportion="-9.227273" vertical-offset="2309" max-vertical-offset="4845">
+          <caret line="266" column="0" selection-start-line="266" selection-start-column="0" selection-end-line="266" selection-end-column="0" />
           <folding>
-            <element signature="e#4160#7568#0" expanded="false" />
-            <element signature="e#7636#8604#0" expanded="false" />
-            <element signature="e#8678#8925#0" expanded="false" />
-            <element signature="e#8997#9098#0" expanded="false" />
-            <element signature="e#9218#10246#0" expanded="false" />
-            <element signature="e#10343#11846#0" expanded="false" />
+            <element signature="e#4229#7637#0" expanded="false" />
+            <element signature="e#9595#9842#0" expanded="false" />
+            <element signature="e#11688#13191#0" expanded="false" />
+            <element signature="e#13308#18712#0" expanded="false" />
+            <element signature="e#18785#19712#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/js/champion_scripts/aatrox.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9959142" vertical-offset="0" max-vertical-offset="6390">
+          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
