@@ -10,11 +10,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="js/constants.js"></script>
-    <script src="js/globals.js"><</script>
+    <script src="js/globals.js"></script>
     <script src="js/champion.js"></script>
     <script src="js/targetdata.js"></script>
     <script src="js/simulation.js"></script>
     <script src="js/graph.js"></script>
+    <script src="js/champmenu.js"></script>
 
     <title>Champ Builder Alpha</title>
 </head>
@@ -31,18 +32,18 @@
                     <div class="panel-body">
                         <table>
                             <tr>
-                                <td rowspan="3"><img src="img/portraits/Aatrox_Square_0.png" alt="Aatrox"></td>
-                                <td>Aatrox</td>
+                                <td rowspan="3"><img id="champion-portrait" src="img/portraits/Aatrox_Square_0.png" alt="Aatrox"></td>
+                                <td id="champion-name">Aatrox</td>
                                 <td>Level 18</td>
                             </tr>
                             <tr>
                                 <td>
                                     <table>
                                         <tr>
-                                            <td><img src="img/abilities/Aatrox_Q.png" alt="Q" height="32" width="32"></td>
-                                            <td><img src="img/abilities/Aatrox_W.png" alt="W" height="32" width="32"></td>
-                                            <td><img src="img/abilities/Aatrox_E.png" alt="E" height="32" width="32"></td>
-                                            <td><img src="img/abilities/Aatrox_R.png" alt="R" height="32" width="32"></td>
+                                            <td><img id="champion-Q" src="img/abilities/Aatrox_Q.png" alt="Q" height="32" width="32"></td>
+                                            <td><img id="champion-W" src="img/abilities/Aatrox_W.png" alt="W" height="32" width="32"></td>
+                                            <td><img id="champion-E" src="img/abilities/Aatrox_E.png" alt="E" height="32" width="32"></td>
+                                            <td><img id="champion-R" src="img/abilities/Aatrox_R.png" alt="R" height="32" width="32"></td>
                                         </tr>
                                         <tr>
                                             <td>5</td>
@@ -143,8 +144,6 @@
         <li><a href="#damage_tab" data-toggle="tab">Damage</a></li>
         <li><a href="#durability_tab" data-toggle="tab">Durability</a></li>
         <li><a href="#disruption_tab" data-toggle="tab">Disruption</a></li>
-        <li><a href="#chasedown_tab" data-toggle="tab">Chasedown</a></li>
-        <li><a href="#escape_tab" data-toggle="tab">Escape</a></li>
     </ul>
 
     <!-- Tab panes -->
@@ -161,15 +160,28 @@
         <div class="tab-pane" id="disruption_tab">
             <canvas class="graph" id="disruption" width="1200" height="600" data-xlabel="Time" data-ylabel="Movement Prevented"></canvas>
         </div>
-        <div class="tab-pane" id="chasedown_tab">
-            <canvas class="graph" id="chasedown" width="1200" height="600" data-xlabel="Time" data-ylabel="Distance"></canvas>
-        </div>
-        <div class="tab-pane" id="escape_tab">
-            <canvas class="graph" id="escape" width="1200" height="600" data-xlabel="Time" data-ylabel="Distance"></canvas>
-        </div>
     </div>
 
     <button data-target="#" id="simulateButton">SIMULATE</button>
+
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                        Select Champion
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <img class="champ-image" src="img/portraits/Aatrox_Square_0.png" alt="Aatrox" height="60" width="60" data-selector="aatrox">
+                    <img class="champ-image" src="img/portraits/Ahri_Square_0.png" alt="Ahri" height="60" width="60" data-selector="ahri">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <br>
     <sub>This product is not endorsed, certified or otherwise approved in any way by Riot Games, Inc. or any of its affiliates.</sub>
     <br>

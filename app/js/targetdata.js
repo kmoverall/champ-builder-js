@@ -107,6 +107,7 @@ var Target = {
             flatbonus: 0,
             percentbonus: 0,
             multpercentbonus: 0,
+            beforeslows: 0,
             current: 0
         },
         tenacity: 0,
@@ -371,7 +372,8 @@ var Target = {
         this.stats.magicresistance.current = (this.stats.magicresistance.base+ this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*(1+this.stats.magicresistance.percentbonus);
         this.stats.magicresistance.bonus = this.stats.magicresistance.flatbonus*(1+this.stats.magicresistance.percentbonus) + (this.stats.magicresistance.base + this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*this.stats.magicresistance.percentbonus;
 
-        this.stats.movementspeed.current = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
+        this.stats.movementspeed.beforeslows = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
+        this.stats.movementspeed.current = this.stats.movementspeed.beforeslows;
 
         //Apply slows. Slow stacking is weird
         var maxslow = null;

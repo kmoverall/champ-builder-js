@@ -100,6 +100,7 @@ var Champion = {
             flatbonus: 0,
             percentbonus: 0,
             multpercentbonus: 0,
+            beforeslows: 0,
             current: 0
         },
         tenacity: 0,
@@ -368,6 +369,30 @@ var Champion = {
 
     //Loads data from Riot API and sets data to the retrieved data
     initialize: function() {
+        this.skills = {};
+        this.effects = {};
+        this.events = {
+            preDamageTaken: {},
+            postDamageTaken: {},
+            preDamageDealt: {},
+            postDamageDealt: {},
+            autoAttack: {},
+            enemyAutoAttack: {},
+            spellCast: {},
+            enemySpellCast: {}
+        };
+        this.crowdcontrol.cantMove = 0;
+        this.crowdcontrol.cantAttack = 0;
+        this.crowdcontrol.cantCast = 0;
+        this.slows = {};
+        this.healingeffect = 1;
+        this.targetable = true;
+        this.attacktimer = 0;
+        this.animation = {
+            timeleft: null,
+            action: null
+        };
+
         this.stats.health.base = this.data["stats"]["hp"];
         this.stats.health.perlevel = this.data["stats"]["hpperlevel"];
 
@@ -454,7 +479,8 @@ var Champion = {
         this.stats.magicresistance.current = (this.stats.magicresistance.base+ this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*(1+this.stats.magicresistance.percentbonus);
         this.stats.magicresistance.bonus = this.stats.magicresistance.flatbonus*(1+this.stats.magicresistance.percentbonus) + (this.stats.magicresistance.base + this.stats.magicresistance.perlevel*this.stats.level + this.stats.magicresistance.flatbonus)*this.stats.magicresistance.percentbonus;
 
-        this.stats.movementspeed.current = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
+        this.stats.movementspeed.beforeslows = (this.stats.movementspeed.base + this.stats.movementspeed.flatbonus)*(1+this.stats.movementspeed.percentbonus)*(1+this.stats.movementspeed.multpercentbonus);
+        this.stats.movementspeed.current = this.stats.movementspeed.beforeslows;
 
         //Apply slows. Slow stacking is weird
         var maxslow = null;
@@ -516,6 +542,10 @@ var Champion = {
         this.healingeffect = 1;
         this.targetable = true;
         this.attacktimer = 0;
+        this.animation = {
+            timeleft: null,
+            action: null
+        };
 
         this.calculateStats();
         Scripts.load();

@@ -5,7 +5,8 @@
 //Champion related constants
 //Links champion names to the Riot designated ID for that champion
 var CHAMP_ID_MAP = {
-    aatrox: 266
+    aatrox: 266,
+    ahri: 103
 };
 
 //Links riots keywords to specific stats to the variables needed internally in ChampBuilder
@@ -50,4 +51,4 @@ var MARGIN = 50;
 
 //Simulation Constants
 var MAX_TIME = 20;
-var TIME_STEP = 0.1;
+var TIME_STEP = (1/60);

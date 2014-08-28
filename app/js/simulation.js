@@ -10,18 +10,14 @@ function simulate() {
         composite: [[0, 0], [50, 25], [100, 100]],
         damage: [],
         durability: [],
-        disruption: [[0, 0], [50, 25], [100, 100]],
-        chasedown: [[0, 0], [50, 25], [100, 100]],
-        escape: [[0, 0], [50, 25], [100, 100]]
+        disruption: [[0, 0], [50, 25], [100, 100]]
     };
 
     var will_plot = {
         composite: false,
         damage: false,
         durability: false,
-        disruption: false,
-        chasedown: false,
-        escape: false
+        disruption: false
     };
 
     var current_health;
@@ -39,9 +35,7 @@ function simulate() {
             composite: false,
             damage: false,
             durability: false,
-            disruption: false,
-            chasedown: false,
-            escape: false
+            disruption: false
         };
         init_targethealth = Target.stats.health.current;
         init_champhealth = Champion.stats.health.current;
@@ -54,11 +48,15 @@ function simulate() {
             Distance = 0;
         }
 
+        //Only plot to durability and damage charts if the difference is more than 1% of total heal from the previous tick
         if (Math.abs(init_champhealth - Champion.stats.health.current) > Champion.stats.health.total * 0.01) {
             will_plot["durability"] = true;
         }
         if (Math.abs(init_targethealth - Target.stats.health.current) > Target.stats.health.total * 0.01) {
             will_plot["damage"] = true;
+        }
+        if (Target.cantMove || Object.keys(Target.slows).length > 0) {
+            will_plot["disruption"] = true;
         }
 
         //Push graph data to results arrays
@@ -71,6 +69,9 @@ function simulate() {
             current_time = time / MAX_TIME * 100;
             current_health = Math.max(Champion.stats.health.current, 0) / Champion.stats.health.total * 100;
             result.durability.push([current_time, current_health]);
+        }
+        if (will_plot["disruption"]) {
+            //TODO: Figure out a good way to plot disruption
         }
 
         //Break out of simulation if Target or Champion dies

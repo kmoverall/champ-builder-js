@@ -14,7 +14,9 @@ $(function() {
     //Runs the simulation and graphs the resultant data
     $("#simulateButton").click(function () {
         console.log("Simulating");
+        console.log("Gettting script at " + Champion.scriptlocation);
         $.getScript( Champion.scriptlocation, function( data, textStatus, jqxhr ) {
+            console.log("Got Scripts");
             Target.reset();
             Champion.reset();
 
@@ -34,6 +36,11 @@ $(function() {
                 drawGraph(results[graphs[i].id], graphs[i]);
                 drawAxes(graphs[i]);
             }
+        }).fail( function(jqxhr, settings, exception) {
+            console.log(jqxhr);
+            console.log(settings);
+            console.log(exception.stack);
+            console.log("Error accessing Champion scripts");
         });
     });
 });
@@ -81,4 +88,13 @@ function drawGraph(data, g) {
     ctx.strokeStyle = "#f00";
     ctx.lineWidth = 4;
     ctx.stroke();
+}
+
+function clearGraphs() {
+    var graphs = Array.prototype.slice.call(document.getElementsByClassName("graph"), 0);
+    for (var i = 0; i < graphs.length; i++) {
+        graphs[i].width = graphs[i].width;
+        document.getElementById("log").innerHTML = "";
+        drawAxes(graphs[i]);
+    }
 }
