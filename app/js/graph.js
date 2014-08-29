@@ -14,10 +14,11 @@ $(function() {
     //Runs the simulation and graphs the resultant data
     $("#simulateButton").click(function () {
         console.log("Simulating");
-        console.log("Gettting script at " + Champion.scriptlocation);
+        console.log("Getting script at " + Champion.scriptlocation);
         $.getScript( Champion.scriptlocation, function( data, textStatus, jqxhr ) {
             console.log("Got Scripts");
             Target.reset();
+            //Scripts are loaded into the Champion object in the reset function
             Champion.reset();
 
             //This is a stupid hack that I'm not 100% sure is needed anymore
@@ -25,8 +26,6 @@ $(function() {
             Champion.slows = {};
             Target.effects = {};
             Champion.effects = {};
-
-            Scripts.load();
 
             console.log("loaded champ scripts: " + Champion.scriptlocation);
 

@@ -448,11 +448,13 @@ var Target = {
         }
 
         this.attacktimer -= TIME_STEP;
-        for (var skill in this.skills) {
+
+        //TODO: Implement Target Skills
+        /*for (var skill in this.skills) {
             if (this.skills.hasOwnProperty(skill)) {
                 this.skills[skill].cdtimer -= TIME_STEP;
             }
-        }
+        }*/
         for (var effect in this.effects) {
             if (this.effects.hasOwnProperty(effect)) {
                 this.effects[effect].duration -= TIME_STEP;

@@ -25,7 +25,7 @@ var Scripts = {
 
             //Apply mana costs
 
-            Log += "\t" + Champion.data.name + " casts Skill for " + 0 + " mana";
+            Log += "\t" + Champion.data.name + " casts " + this.name + " for " + 0 + " mana";
 
             //Calculate and apply damage
             var basedamage = Champion.data.spells[0].effect[0][this.rank-1];
