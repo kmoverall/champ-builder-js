@@ -102,15 +102,15 @@
             "damagereduction": {
                 "auto": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "physical": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "magic": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 }
             }
         },
@@ -230,15 +230,15 @@
             "damagereduction": {
                 "auto": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "physical": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "magic": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 }
             }
         },
@@ -363,15 +363,15 @@
             "damagereduction": {
                 "auto": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "physical": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "magic": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 }
             }
         },
@@ -496,15 +496,15 @@
             "damagereduction": {
                 "auto": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "physical": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "magic": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 }
             }
         },
@@ -624,15 +624,15 @@
             "damagereduction": {
                 "auto": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "physical": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 },
                 "magic": {
                     "flat": 0,
-                    "percent": 0
+                    "percent": 1
                 }
             }
         },

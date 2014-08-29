@@ -53,7 +53,8 @@ var Scripts = {
             var basedamage = Champion.data.spells[0].effect[0][this.rank-1];
             var scalingstat = Champion.data.spells[0].vars[0]["link"];
             var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
-            Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL);
+            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL);
+            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
 
             //Apply CC
             Scripts.effects.DarkFlight.duration = Champion.data.spells[0].effect[4][this.rank-1];

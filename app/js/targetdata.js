@@ -138,15 +138,15 @@ var Target = {
         damagereduction: {
             auto: {
                 flat: 0,
-                percent: 0
+                percent: 1
             },
             physical: {
                 flat: 0,
-                percent: 0
+                percent: 1
             },
             magic: {
                 flat: 0,
-                percent: 0
+                percent: 1
             }
         }
     },
@@ -210,12 +210,12 @@ var Target = {
 
                 //apply non-resistance damage reduction/amplification
                 if(source = DAMAGE_SOURCE.AUTOATTACK) {
-                    damage = damage * (1 - this.stats.damagereduction.auto.percent) * (1 - this.daamgereduction.physical.percent);
+                    damage = damage * (this.stats.damagereduction.auto.percent) * (this.damagereduction.physical.percent);
                     damage = damage - this.stats.damagereduction.auto.flat - this.stats.damagereduction.physical.flat;
 
                 }
                 else {
-                    damage *= 1-this.stats.damagereduction.physical.percent;
+                    damage *= this.stats.damagereduction.physical.percent;
                     damage -= this.stats.damagereduction.physical.flat;
                 }
 
@@ -233,7 +233,7 @@ var Target = {
                 }
 
                 //apply non-resistance damage reduction/amplification
-                damage *= 1-this.stats.damagereduction.magic.percent;
+                damage *= this.stats.damagereduction.magic.percent;
                 damage -= this.stats.damagereduction.magic.flat;
 
                 Log += "\tTarget takes " + damage + " magic damage\n";
