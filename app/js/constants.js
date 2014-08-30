@@ -40,12 +40,6 @@ var DAMAGE_TYPES = {
     TRUE: 2
 };
 
-var DAMAGE_SOURCE = {
-    AUTOATTACK: 0,
-    SKILL: 1,
-    OTHER: 2
-};
-
 //Graphing Constants
 var MARGIN = 50;
 

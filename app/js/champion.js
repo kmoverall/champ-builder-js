@@ -178,7 +178,25 @@ var Champion = {
         action: null
     },
 
-    //Applies damage to this Champion of magnitude = damage, damage type = type (defined by DAMAGE_TYPES), and a damage source defined by DAMAGE_SOURCE
+    dealDamage: function(damage, type, source) {
+        this.processEvents("preDamageDealt", [damage, type, source]);
+        damage = Target.takeDamage(damage, type, source);
+        this.processEvents("postDamageDealt", [damage, type, source]);
+
+        if(source === "autoattack") {
+            this.heal(damage * this.stats.lifesteal);
+        } else if (source !== null) {
+            if (source.aoe) {
+                this.heal(damage * this.stats.spellvamp * (1/3));
+            } else {
+                this.heal(damage * this.stats.spellvamp);
+            }
+        }
+
+        return damage;
+    },
+
+    //Applies damage to this Champion of magnitude = damage, damage type = type (defined by DAMAGE_TYPES), and a source = the skill used
     takeDamage: function(damage, type, source) {
         this.processEvents("preDamageTaken", [damage, type, source]);
 
@@ -195,8 +213,8 @@ var Champion = {
                 }
 
                 //apply non-resistance damage reduction/amplification
-                if(source = DAMAGE_SOURCE.AUTOATTACK) {
-                    damage = damage * (this.stats.damagereduction.auto.percent) * (this.daamgereduction.physical.percent);
+                if(source === "autoattack") {
+                    damage = damage * (this.stats.damagereduction.auto.percent) * (this.stats.damagereduction.physical.percent);
                     damage = damage - this.stats.damagereduction.auto.flat - this.stats.damagereduction.physical.flat;
 
                 }
@@ -281,6 +299,8 @@ var Champion = {
                     Log += "\t" + this.data.name + " begins casting " + this.skills[skill].name + "\n";
                 } else if (this.skills[skill].willCast()) {
                     this.skills[skill].cast();
+                    this.processEvents("spellCast", null);
+                    Target.processEvents("enemySpellCast", null);
                 }
             }
         }
@@ -299,13 +319,10 @@ var Champion = {
         Log += "\t" + this.data.name + " attacks\n";
 
         var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance * (this.stats.critical.damage - 1));
-        this.processEvents("preDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
-        damage = Target.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
+        damage = this.dealDamage(damage, DAMAGE_TYPES.PHYSICAL, "autoattack");
         //Trigger all events that occur on autoattacks
         this.processEvents("autoAttack", [damage]);
         Target.processEvents("enemyAutoAttack", [damage]);
-        this.processEvents("postDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
-        this.heal(damage * this.stats.lifesteal);
 
         //reset attack timer
         this.attacktimer = (1 / this.stats.attackspeed.current) - 0.1;

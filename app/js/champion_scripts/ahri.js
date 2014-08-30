@@ -20,8 +20,7 @@ var Scripts = {
 
         Champion.skills.push(this.W);
 
-        //Add Skills in order of highest casting priority to lowest
-        //TODO: Add a Champion.dealDamage function so that dealtDamage events can be called
+        Champion.registerEvent(this.events.EssenceTheft, "postDamageDealt");
     },
     Q: {
         name: "Orb of Deception",
@@ -44,13 +43,12 @@ var Scripts = {
             var basedamage = Champion.data.spells[0].effect[0][this.rank-1];
             var scalingstat = Champion.data.spells[0].vars[0]["link"];
             var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
-            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
+            var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
             var truedmg = basedamage + scalingdamage;
             if("Charm" in Target.effects) {
                 truedmg *= 1.2;
             }
-            damage += Target.takeDamage(truedmg, DAMAGE_TYPES.TRUE, DAMAGE_SOURCE.SKILL);
-            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
+            damage += Champion.dealDamage(truedmg, DAMAGE_TYPES.TRUE, this);
 
             //Start Cooldown
             this.cdtimer = Champion.data.spells[0].cooldown[this.rank-1]*(1-Champion.stats.cdr);
@@ -114,7 +112,7 @@ var Scripts = {
             var basedamage = Champion.data.spells[2].effect[0][this.rank-1];
             var scalingstat = Champion.data.spells[2].vars[0]["link"];
             var scalingdamage = Champion.data.spells[2].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
-            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
+            var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
             Champion.heal(damage * Champion.stats.spellvamp);
 
             //Apply Effects
@@ -130,7 +128,7 @@ var Scripts = {
         rank: 3,
         range: 0,
         cdtimer: 0,
-        casttime: 0.1,
+        casttime: 0.25,
         aoe: true,
         charges: 0,
         willCast: function() {
@@ -154,11 +152,10 @@ var Scripts = {
             var basedamage = Champion.data.spells[3].effect[0][this.rank-1];
             var scalingstat = Champion.data.spells[3].vars[0]["link"];
             var scalingdamage = Champion.data.spells[3].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
-            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
-            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
+            var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
 
             if (this.charges > 0) {
-                this.cdtimer = 0.5;
+                this.cdtimer = 0.25;
             } else {
                 //Removing this effect will also put Spirit Rush on its full cooldown
                 Champion.removeEffect(Scripts.effects.SpiritRush);
@@ -181,14 +178,11 @@ var Scripts = {
             },
             tick: function () {
                 if (this.duration <= this.delaytime && Distance < this.range) {
-                    var damage = Target.takeDamage(this.initialdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
-                    Champion.heal(damage * Champion.stats.spellvamp);
+                    var damage = Champion.dealDamage(this.initialdamage, DAMAGE_TYPES.MAGIC, Scripts.W);
 
-                    damage = Target.takeDamage(this.furtherdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
-                    Champion.heal(damage * Champion.stats.spellvamp);
+                    damage = Champion.dealDamage(this.furtherdamage, DAMAGE_TYPES.MAGIC, Scripts.W);
 
-                    damage = Target.takeDamage(this.furtherdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
-                    Champion.heal(damage * Champion.stats.spellvamp);
+                    damage = Champion.dealDamage(this.furtherdamage, DAMAGE_TYPES.MAGIC, Scripts.W);
 
                     Scripts.W.cdtimer = this.cooldown;
                     Champion.removeEffect(this);
@@ -234,6 +228,7 @@ var Scripts = {
             tick: function () {
             },
             remove: function () {
+                Log += "\t" + this.name + " expires on " + Champion.data.name + "\n";
                 Scripts.R.cdtimer = this.ultcooldown;
                 Scripts.R.charges = 0;
             }
@@ -242,8 +237,30 @@ var Scripts = {
     events: {
         EssenceTheft: {
             name: "Essence Theft",
+            stacks: 0,
             triggerEvent: function (arguments) {
+                if (arguments[2] !== null && arguments[2] !== "autoattack") {
+                    if (this.stacks < 8) {
+                        this.stacks++;
+                        Log += "\t" + this.name + " is at " + this.stacks + " stacks\n";
+                    } else if (this.stacks == 8) {
+                        Log += "\t" + this.name + " is ready\n";
+                        Champion.registerEvent(Scripts.events.EssenceTheftHeal, "spellCast");
+                        this.stacks++;
+                    }
+                }
+            }
+        },
+        EssenceTheftHeal: {
+            name: "Essence Theft Heal",
+            triggerEvent: function (arguments) {
+                Log += "\t" + Champion.data.name + " procs Essence Theft\n";
+                var baseheal = 2 + Champion.stats.level;
+                var scalingheal = 0.09 * Champion.stats.abilitypower.current;
+                Champion.heal(baseheal + scalingheal);
 
+                Scripts.events.EssenceTheft.stacks = 0;
+                Champion.removeEvent(this, "spellCast");
             }
         }
     }

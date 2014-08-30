@@ -53,8 +53,7 @@ var Scripts = {
             var basedamage = Champion.data.spells[0].effect[0][this.rank-1];
             var scalingstat = Champion.data.spells[0].vars[0]["link"];
             var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
-            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL);
-            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
+            var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, this);
 
             //Apply CC
             Scripts.effects.DarkFlight.duration = Champion.data.spells[0].effect[4][this.rank-1];
@@ -150,8 +149,7 @@ var Scripts = {
             scalingstat[1] = Champion.data.spells[2].vars[1]["link"];
             var scalingdamage = Champion.data.spells[2].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat[0]][0]] [STAT_LINK_MAP[scalingstat[0]][1]];
             scalingdamage += Champion.data.spells[2].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat[1]][0]] [STAT_LINK_MAP[scalingstat[1]][1]];
-            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
-            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
+            var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
 
             //Apply CC
             Scripts.effects.BladesOfTorment.duration = Champion.data.spells[2].effect[3][this.rank - 1] * (1-Champion.stats.tenacity);
@@ -179,8 +177,7 @@ var Scripts = {
             var basedamage = Champion.data.spells[3].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[3].vars[0]["link"];
             var scalingdamage = Champion.data.spells[3].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
-            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, DAMAGE_SOURCE.SKILL);
-            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
+            var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
 
             Scripts.effects.Massacre.duration = Champion.data.spells[3].effect[0][this.rank - 1];
             Scripts.effects.Massacre.speed = Champion.data.spells[3].effect[2][this.rank - 1] / 100;
@@ -399,7 +396,7 @@ var Scripts = {
                     Log += "\t"+ Champion.data.name +" procs Blood Price for "+this.cost+" health\n";
                     if (Champion.stats.health.current > this.cost) {
                         this.stacks = 0;
-                        Target.takeDamage(this.strength, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.OTHER);
+                        Champion.dealDamage(this.strength, DAMAGE_TYPES.PHYSICAL, null);
                         Champion.stats.health.current -= this.cost;
 
                         //Store in the blood well

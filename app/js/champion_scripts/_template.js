@@ -35,7 +35,7 @@ var Scripts = {
             var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
 
             Champion.processEvents("preDamageDealt", [basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL]);
-            var damage = Target.takeDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL);
+            var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, this);
             Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
             Champion.processEvents("postDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL]);
 

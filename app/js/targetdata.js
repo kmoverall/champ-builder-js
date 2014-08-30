@@ -183,24 +183,32 @@ var Target = {
         action: null
     },
 
-    takeDamage: function(damage, type, source) {
-        //Triggers effects based on current damage source
-        switch(source) {
-            case DAMAGE_SOURCE.AUTOATTACK:
-                this.processEvents("enemyAutoAttack", [damage]);
-                break;
-            case DAMAGE_SOURCE.SKILL:
-                this.processEvents("enemySpellCast", [damage]);
-                break;
+    dealDamage: function(damage, type, source) {
+        this.processEvents("preDamageDealt", [damage, type, source]);
+        damage = Champion.takeDamage(damage, type, source);
+        this.processEvents("postDamageDealt", [damage, type, source]);
+
+        if(source === "autoattack") {
+            this.heal(damage * this.stats.lifesteal);
+        } else if (source !== null) {
+            if (source.aoe) {
+                this.heal(damage * this.stats.spellvamp * (1/3));
+            } else {
+                this.heal(damage * this.stats.spellvamp);
+            }
         }
 
+        return damage;
+    },
+
+    takeDamage: function(damage, type, source) {
         this.processEvents("preDamageTaken", [damage, type, source]);
 
         //Reduces damage taken based on source and damage type
         switch(type) {
             case DAMAGE_TYPES.PHYSICAL:
                 //apply armor
-                effective_armor = this.stats.armor.current * (1 - Champion.stats.armorpenetration.percent) - Champion.stats.armorpenetration.flat;
+                effective_armor = this.stats.armor.current * (1 - Target.stats.armorpenetration.percent) - Target.stats.armorpenetration.flat;
                 if (effective_armor >= 0) {
                     damage *= 100 / (100 + effective_armor);
                 }
@@ -209,8 +217,8 @@ var Target = {
                 }
 
                 //apply non-resistance damage reduction/amplification
-                if(source = DAMAGE_SOURCE.AUTOATTACK) {
-                    damage = damage * (this.stats.damagereduction.auto.percent) * (this.damagereduction.physical.percent);
+                if(source === "autoattack") {
+                    damage = damage * (this.stats.damagereduction.auto.percent) * (this.stats.damagereduction.physical.percent);
                     damage = damage - this.stats.damagereduction.auto.flat - this.stats.damagereduction.physical.flat;
 
                 }
@@ -224,12 +232,12 @@ var Target = {
 
             case DAMAGE_TYPES.MAGIC:
                 //apply magic resistance
-                effective_mr = this.stats.magicresistance.current * (1 - Champion.stats.magicpenetration.percent) - Champion.stats.magicpenetration.flat;
-                if (effective_armor >= 0) {
-                    damage *= 100 / (100 + effective_armor);
+                effective_mr = this.stats.magicresistance.current * (1 - Target.stats.magicpenetration.percent) - Target.stats.magicpenetration.flat;
+                if (effective_mr >= 0) {
+                    damage *= 100 / (100 + effective_mr);
                 }
                 else {
-                    damage *= 2 - 100 / (100 - effective_armor)
+                    damage *= 2 - 100 / (100 - effective_mr)
                 }
 
                 //apply non-resistance damage reduction/amplification
@@ -280,7 +288,7 @@ var Target = {
         return damage;
     },
 
-    //Champion attempts to act, prioritizing skills before autoattacks
+    //Champion attempts to act, prioritizing autoattacks before skills
     act: function() {
         //TODO: Implement Target skills
         /*for (var skill in this.skills) {
@@ -311,13 +319,9 @@ var Target = {
         Log += "\tTarget attacks\n";
 
         var damage = this.stats.attackdamage.current * (1 + this.stats.critical.chance * (this.stats.critical.damage - 1));
-        this.processEvents("preDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
-        damage = Champion.takeDamage(damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK);
+        damage = this.dealDamage(damage, DAMAGE_TYPES.PHYSICAL, "autoattack");
         //Trigger all effects that occur on autoattacks
         this.processEvents("autoAttack", [damage]);
-        this.processEvents("postDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.AUTOATTACK]);
-
-        this.heal(damage * this.stats.lifesteal);
 
         //reset attack timer
         this.attacktimer = (1 / this.stats.attackspeed.current) - 0.1;
