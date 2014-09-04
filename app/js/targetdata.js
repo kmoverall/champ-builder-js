@@ -1,37 +1,6 @@
 /**
  * Created by kevinoverall on 5/15/14.
  */
-
-$(function() {
-    setToPreset("marksman");
-
-    $(".editPreset").click(function () {
-        setToPreset(event.target.id);
-    });
-});
-
-function setToPreset(preset) {
-    console.log("Setting Preset to "+preset);
-    var jqxhr = $.getJSON("js/targetpresets.json", function(preset_data){
-        Target.stats = preset_data[preset]["stats"];
-        Target.skills = preset_data[preset]["skills"];
-
-        //Calculate stat panel info
-        document.getElementById("physicalDPS").innerHTML = String(Math.floor(Target.stats.attackdamage.current * Target.stats.attackspeed.current * (1+Target.stats.critical.chance * Target.stats.critical.damage)
-            + Target.skills[0].damage / Target.skills[0].cooldown));
-        document.getElementById("magicalDPS").innerHTML = String(Math.floor(Target.skills[1].damage / Target.skills[1].cooldown));
-        document.getElementById("physicalHealth").innerHTML = String(Math.floor(Target.stats.health.total * ((100+Target.stats.armor.current)/100)));
-        document.getElementById("magicalHealth").innerHTML = String(Math.floor(Target.stats.health.total * ((100+Target.stats.magicresistance.current)/100)));
-    })
-        .fail(function() {
-            alert( "Error retrieving data from Champ Builder server. Please try again later" );
-        });
-
-    jqxhr.complete(function() {
-
-    });
-}
-
 var Target = {
     stats: {
         level: 18,
@@ -175,6 +144,8 @@ var Target = {
         physical: 0,
         magic: 0
     },
+    stealthed: false,
+    revealed: false,
     healingeffect: 1,
     targetable: true,
     attacktimer: 0,
@@ -301,9 +272,11 @@ var Target = {
                 }
             }
         }*/
-        if (Distance <= this.stats.attackrange.current && !this.crowdcontrol.cantAttack && Champion.targetable && !this.isAnimating() && this.attacktimer <= 0) {
+        if (Distance <= this.stats.attackrange.current && !this.crowdcontrol.cantAttack && Champion.targetable &&
+            !this.isAnimating() && this.attacktimer <= 0 && (!Champion.stealthed || (Champion.stealthed && Champion.revealed))) {
             this.animation.timeleft = 0.1;
             this.animation.action = "autoattack";
+            this.stealthed = false;
         }
     },
 

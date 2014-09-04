@@ -6,7 +6,8 @@
 //Links champion names to the Riot designated ID for that champion
 var CHAMP_ID_MAP = {
     aatrox: 266,
-    ahri: 103
+    ahri: 103,
+    akali: 84
 };
 
 //Links riots keywords to specific stats to the variables needed internally in ChampBuilder
@@ -31,7 +32,8 @@ Champion.stats[STAT_LINK_MAP[...][0]][STAT_LINK_MAP[...][1]] will point to appro
  */
 var STAT_LINK_MAP = {
     bonusattackdamage: ["attackdamage", "bonus"],
-    spelldamage: ["abilitypower", "current"]
+    spelldamage: ["abilitypower", "current"],
+    attackdamage: ["attackdamage", "current"]
 };
 
 var DAMAGE_TYPES = {

@@ -1,28 +1,6 @@
 /**
  * Created by kevinoverall on 7/24/14.
  */
-
-
-
-//Loading functions
-$(function() {
-    loadChampion("aatrox");
-});
-
-function loadChampion(champName) {
-    champId = CHAMP_ID_MAP[champName];
-    var jqxhr = $.getJSON("https://na.api.pvp.net/api/lol/static-data/na/v1.2/champion/"+champId+"?champData=all&api_key=d4e9f82e-4344-4719-a68f-1015c61a6bb4", function(data) {
-        Champion.data = data;
-        Champion.scriptlocation = "js/champion_scripts/"+champName+".js";
-        Champion.initialize();
-        console.log(Champion);
-    })
-        .fail(function() {
-            alert( "Error connecting to Riot API. Please try again later" );
-        });
-
-}
-
 var Champion = {
     data: {},
     scriptlocation: "",
@@ -163,6 +141,8 @@ var Champion = {
         cantCast: false,
         airborne: false
     },
+    stealthed: false,
+    revealed: false,
     //Slows are listed as an array of slow strengths
     slows: {},
     shield: {
@@ -286,9 +266,11 @@ var Champion = {
 
     //Champion attempts to act, prioritizing skills before autoattacks
     act: function() {
-        if (Distance <= this.stats.attackrange.current && !this.crowdcontrol.cantAttack && Target.targetable && !this.isAnimating() && this.attacktimer <= 0) {
+        if (Distance <= this.stats.attackrange.current && !this.crowdcontrol.cantAttack && Target.targetable &&
+            !this.isAnimating() && this.attacktimer <= 0 && (!Target.stealthed || (Target.stealthed && Target.revealed))) {
             this.animation.timeleft = 0.1;
             this.animation.action = "autoattack";
+            this.stealthed = false;
             Log += "\t" + this.data.name + " begins attacking\n";
         }
         for (var skill in this.skills) {
@@ -297,10 +279,12 @@ var Champion = {
                     this.animation.timeleft = (this.skills[skill].casttime);
                     this.animation.action = skill;
                     Log += "\t" + this.data.name + " begins casting " + this.skills[skill].name + "\n";
+                    this.stealthed = false;
                 } else if (this.skills[skill].willCast()) {
                     this.skills[skill].cast();
                     this.processEvents("spellCast", null);
                     Target.processEvents("enemySpellCast", null);
+                    this.stealthed = false;
                 }
             }
         }

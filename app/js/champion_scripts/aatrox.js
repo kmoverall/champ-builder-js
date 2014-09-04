@@ -227,7 +227,7 @@ var Scripts = {
             tick: function () {},
             remove: function () {
                 Log += "\t"+ this.name + " expires on Target";
-                delete Target.slows[name];
+                delete Target.slows[this.name];
             }
         },
         BloodWell: {

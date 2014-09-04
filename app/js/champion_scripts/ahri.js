@@ -132,8 +132,9 @@ var Scripts = {
         aoe: true,
         charges: 0,
         willCast: function() {
-            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast
-                && !Champion.isAnimating() && Champion.stats.mana.current >= Champion.data.spells[3].cost[this.rank-1];
+            return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast && !Champion.crowdcontrol.cantMove
+                && !Champion.isAnimating() && Champion.stats.mana.current >= Champion.data.spells[3].cost[this.rank-1]
+                && (!Target.stealthed || (Target.stealthed && Target.revealed));
         },
         cast: function() {
             //Apply mana costs
@@ -177,7 +178,8 @@ var Scripts = {
                 this.duration = 5;
             },
             tick: function () {
-                if (this.duration <= this.delaytime && Distance < this.range) {
+                if (this.duration <= this.delaytime && Distance < this.range
+                    && (!Target.stealthed || (Target.stealthed && Target.revealed)) && Target.targetable) {
                     var damage = Champion.dealDamage(this.initialdamage, DAMAGE_TYPES.MAGIC, Scripts.W);
 
                     damage = Champion.dealDamage(this.furtherdamage, DAMAGE_TYPES.MAGIC, Scripts.W);

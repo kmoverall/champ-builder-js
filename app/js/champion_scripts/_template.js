@@ -21,7 +21,8 @@ var Scripts = {
         //A Generic willCast function
         willCast: function() {
             return this.cdtimer <= 0 && Distance <= this.range && Target.targetable && !Champion.crowdcontrol.cantCast
-                && !Champion.isAnimating() && Champion.stats.mana.current <= Champion.data.spells[0].cost[this.rank-1];
+                && !Champion.isAnimating() && Champion.stats.mana.current >= Champion.data.spells[0].cost[this.rank-1]
+                && (!Target.stealthed || (Target.stealthed && Target.revealed));
         },
         cast: function() {
 
@@ -34,10 +35,7 @@ var Scripts = {
             var scalingstat = Champion.data.spells[0].vars[0]["link"];
             var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
 
-            Champion.processEvents("preDamageDealt", [basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL]);
             var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, this);
-            Champion.heal(damage * (1/3) * Champion.stats.spellvamp);
-            Champion.processEvents("postDamageDealt", [damage, DAMAGE_TYPES.PHYSICAL, DAMAGE_SOURCE.SKILL]);
 
             //Apply Effects
             Scripts.effects.Q.duration = Champion.data.spells[0].effect[0][this.rank-1];
