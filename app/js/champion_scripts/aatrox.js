@@ -3,6 +3,7 @@
  */
 var Scripts = {
     load: function() {
+
         Champion.manaless = true;
 
         Champion.addEffect(this.effects.BloodWell);
@@ -25,6 +26,7 @@ var Scripts = {
         this.events.BloodThirst.boost = (100 + Champion.data.spells[1].effect[0][this.W.rank-1]) / 100;
         Champion.addEffect(this.effects.BloodThirst);
         Champion.skills.push(this.W);
+
     },
     Q: {
         name: "Dark Flight",
