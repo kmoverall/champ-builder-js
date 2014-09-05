@@ -40,7 +40,7 @@ var Scripts = {
             Log += "\t" + Champion.data.name + " casts " + this.name + " for " + Champion.data.spells[0].cost[this.rank-1] + " mana";
 
             //Calculate and apply damage
-            var basedamage = Champion.data.spells[0].effect[0][this.rank-1];
+            var basedamage = Champion.data.spells[0].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[0].vars[0]["link"];
             var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
@@ -71,13 +71,13 @@ var Scripts = {
             Log += "\t" + Champion.data.name + " casts " + this.name + " for " + Champion.data.spells[1].cost[this.rank-1] + " mana";
 
             //Calculate damage
-            var basedamage = Champion.data.spells[1].effect[0][this.rank-1];
+            var basedamage = Champion.data.spells[1].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[1].vars[0]["link"];
             var scalingdamage = Champion.data.spells[1].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             Scripts.effects.FoxFire.initialdamage = basedamage + scalingdamage;
 
-            basedamage = Champion.data.spells[1].effect[1][this.rank-1];
-            var reductionratio = basedamage / Champion.data.spells[1].effect[0][this.rank-1];
+            basedamage = Champion.data.spells[1].effect[2][this.rank-1];
+            var reductionratio = basedamage / Champion.data.spells[1].effect[1][this.rank-1];
             scalingdamage = Champion.data.spells[1].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             Scripts.effects.FoxFire.furtherdamage = basedamage + scalingdamage * reductionratio;
 
@@ -109,14 +109,14 @@ var Scripts = {
             Log += "\t" + Champion.data.name + " casts " + this.name + " for " + Champion.data.spells[2].cost[this.rank-1] + " mana";
 
             //Calculate and apply damage
-            var basedamage = Champion.data.spells[2].effect[0][this.rank-1];
+            var basedamage = Champion.data.spells[2].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[2].vars[0]["link"];
             var scalingdamage = Champion.data.spells[2].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
             Champion.heal(damage * Champion.stats.spellvamp);
 
             //Apply Effects
-            Scripts.effects.Charm.duration = Champion.data.spells[2].effect[1][this.rank-1] * (1-Target.stats.tenacity);
+            Scripts.effects.Charm.duration = Champion.data.spells[2].effect[2][this.rank-1] * (1-Target.stats.tenacity);
             Target.addEffect(Scripts.effects.Charm);
 
             //Start Cooldown
@@ -150,7 +150,7 @@ var Scripts = {
             this.charges -= 1;
 
             //Calculate and apply damage
-            var basedamage = Champion.data.spells[3].effect[0][this.rank-1];
+            var basedamage = Champion.data.spells[3].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[3].vars[0]["link"];
             var scalingdamage = Champion.data.spells[3].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);

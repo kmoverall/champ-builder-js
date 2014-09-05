@@ -22,7 +22,7 @@ var Scripts = {
         Champion.skills.push(this.Q);
 
         this.R.range = Champion.data.spells[3].range[this.R.rank-1];
-        this.effects.ShadowDanceAmmo.charges = Champion.data.spells[3].effect[3][this.R.rank-1];
+        this.effects.ShadowDanceAmmo.charges = Champion.data.spells[3].effect[4][this.R.rank-1];
         Champion.addEffect(this.effects.ShadowDanceAmmo);
         Champion.skills.push(this.R);
 
@@ -49,17 +49,17 @@ var Scripts = {
             Log += "\t" + Champion.data.name + " has " + Champion.stats.mana.current + " energy left";
 
             //Calculate and apply damage
-            var basedamage = Champion.data.spells[0].effect[4][this.rank-1];
+            var basedamage = Champion.data.spells[0].effect[5][this.rank-1];
             var scalingstat = Champion.data.spells[0].vars[0]["link"];
             var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
 
             var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
 
-            Scripts.effects.MarkOfTheAssassin.duration = Champion.data.spells[0].effect[3][this.rank-1];
-            basedamage = Champion.data.spells[0].effect[0][this.rank-1];
+            Scripts.effects.MarkOfTheAssassin.duration = Champion.data.spells[0].effect[4][this.rank-1];
+            basedamage = Champion.data.spells[0].effect[1][this.rank-1];
             scalingdamage = Champion.data.spells[0].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             Scripts.events.MarkOfTheAssassin.damage = basedamage + scalingdamage;
-            Scripts.events.MarkOfTheAssassin.restore = Champion.data.spells[0].effect[1][this.rank-1];
+            Scripts.events.MarkOfTheAssassin.restore = Champion.data.spells[0].effect[2][this.rank-1];
 
             Target.addEffect(Scripts.effects.MarkOfTheAssassin);
 
@@ -84,10 +84,10 @@ var Scripts = {
             Log += "\t" + Champion.data.name + " casts " + this.name + " for " + Champion.data.spells[1].cost[this.rank-1] + " energy";
             Log += "\t" + Champion.data.name + " has " + Champion.stats.mana.current + " energy left";
 
-            Scripts.effects.TwilightShroudStealth.duration = Champion.data.spells[1].effect[0][this.rank-1];
+            Scripts.effects.TwilightShroudStealth.duration = Champion.data.spells[1].effect[1][this.rank-1];
             Champion.addEffect(Scripts.effects.TwilightShroudStealth);
 
-            Scripts.effects.TwilightShroudSlow.duration = Champion.data.spells[1].effect[0][this.rank-1];
+            Scripts.effects.TwilightShroudSlow.duration = Champion.data.spells[1].effect[1][this.rank-1];
             Champion.addEffect(Scripts.effects.TwilightShroudSlow);
 
             //Start Cooldown
@@ -113,7 +113,7 @@ var Scripts = {
             Log += "\t" + Champion.data.name + " has " + Champion.stats.mana.current + " energy left";
 
             //Calculate and apply damage
-            var basedamage = Champion.data.spells[2].effect[0][this.rank-1];
+            var basedamage = Champion.data.spells[2].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[2].vars[0]["link"];
             var scalingdamage = Champion.data.spells[2].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             scalingstat = Champion.data.spells[2].vars[1]["link"];
@@ -145,7 +145,7 @@ var Scripts = {
             Log += "\t" + Champion.data.name + " has " + Scripts.effects.ShadowDanceAmmo.charges + " charges left";
 
             //Calculate and apply damage
-            var basedamage = Champion.data.spells[3].effect[0][this.rank-1];
+            var basedamage = Champion.data.spells[3].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[3].vars[0]["link"];
             var scalingdamage = Champion.data.spells[3].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
 
@@ -176,11 +176,11 @@ var Scripts = {
             cleansable: false,
             duration: 0,
             apply: function () {
-                Log += "\t" + Champion.data.name + " is stealthed, resists are increased by " + Champion.data.spells[1].effect[1][Scripts.W.rank-1] + "\n";
+                Log += "\t" + Champion.data.name + " is stealthed, resists are increased by " + Champion.data.spells[1].effect[2][Scripts.W.rank-1] + "\n";
                 Champion.stealthed = true;
-                this.duration = Champion.data.spells[1].effect[0][Scripts.W.rank-1];
-                Champion.stats.armor.flatbonus += Champion.data.spells[1].effect[1][Scripts.W.rank-1];
-                Champion.stats.magicresistance.flatbonus += Champion.data.spells[1].effect[1][Scripts.W.rank-1];
+                this.duration = Champion.data.spells[1].effect[1][Scripts.W.rank-1];
+                Champion.stats.armor.flatbonus += Champion.data.spells[1].effect[2][Scripts.W.rank-1];
+                Champion.stats.magicresistance.flatbonus += Champion.data.spells[1].effect[2][Scripts.W.rank-1];
 
                 Champion.registerEvent(Scripts.events.TwilightShroudReveal, "autoAttack");
                 Champion.registerEvent(Scripts.events.TwilightShroudReveal, "spellCast");
@@ -192,8 +192,8 @@ var Scripts = {
                 Log += "\tTwilight Shroud expires on " + Champion.data.name + "\n";
 
                 Champion.stealthed = false;
-                Champion.stats.armor.flatbonus -= Champion.data.spells[1].effect[1][Scripts.W.rank-1];
-                Champion.stats.magicresistance.flatbonus -= Champion.data.spells[1].effect[1][Scripts.W.rank-1];
+                Champion.stats.armor.flatbonus -= Champion.data.spells[1].effect[2][Scripts.W.rank-1];
+                Champion.stats.magicresistance.flatbonus -= Champion.data.spells[1].effect[2][Scripts.W.rank-1];
 
                 Champion.removeEffect(Scripts.effects.TwilightShroudReveal);
                 Champion.removeEvent(Scripts.events.TwilightShroudReveal, "autoAttack");
@@ -223,11 +223,11 @@ var Scripts = {
             cleansable: true,
             duration: 0,
             apply: function () {
-                Log += "\tTarget is slowed by " + Champion.data.spells[1].effect[2][Scripts.W.rank-1] * (1 - Target.stats.slowresist) + "% for " + this.duration + " seconds\n";
-                Target.slows[this.name] = Champion.data.spells[1].effect[2][Scripts.W.rank-1] * (1 - Target.stats.slowresist);
+                Log += "\tTarget is slowed by " + Champion.data.spells[1].effect[3][Scripts.W.rank-1] * (1 - Target.stats.slowresist) + "% for " + this.duration + " seconds\n";
+                Target.slows[this.name] = Champion.data.spells[1].effect[3][Scripts.W.rank-1] * (1 - Target.stats.slowresist);
             },
             tick: function () {
-                Target.slows[this.name] = Champion.data.spells[1].effect[2][Scripts.W.rank-1] * (1 - Target.stats.slowresist);
+                Target.slows[this.name] = Champion.data.spells[1].effect[3][Scripts.W.rank-1] * (1 - Target.stats.slowresist);
             },
             remove: function () {
                 Log += "\t"+ this.name + " expires on Target";
@@ -244,10 +244,10 @@ var Scripts = {
             apply: function () {
             },
             tick: function () {
-                if (this.charges < Champion.data.spells[2].effect[1][Scripts.R.rank-1]) {
+                if (this.charges < Champion.data.spells[2].effect[2][Scripts.R.rank-1]) {
                     if (this.cdtimer <= 0) {
                         this.charges++;
-                        this.cdtimer = Champion.data.spells[2].effect[2][Scripts.R.rank-1] * (1 - Champion.stats.cdr);
+                        this.cdtimer = Champion.data.spells[2].effect[3][Scripts.R.rank-1] * (1 - Champion.stats.cdr);
                     } else {
                         this.cdtimer -= TIME_STEP;
                     }

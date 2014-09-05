@@ -19,11 +19,11 @@ var Scripts = {
 
         //Champion.skills.push(this.W);
         //Initialize Blood Thirst Numbers
-        var baseheal = Champion.data.spells[1].effect[2][this.W.rank-1];
+        var baseheal = Champion.data.spells[1].effect[3][this.W.rank-1];
         var scalingstat = Champion.data.spells[1].vars[0]["link"];
         var scalingheal = Champion.data.spells[1].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
         this.events.BloodThirst.strength = baseheal + scalingheal;
-        this.events.BloodThirst.boost = (100 + Champion.data.spells[1].effect[0][this.W.rank-1]) / 100;
+        this.events.BloodThirst.boost = (100 + Champion.data.spells[1].effect[1][this.W.rank-1]) / 100;
         Champion.addEffect(this.effects.BloodThirst);
         Champion.skills.push(this.W);
 
@@ -41,7 +41,7 @@ var Scripts = {
         cast: function() {
 
             //Apply health cost
-            var cost = Champion.stats.health.current * (Champion.data.spells[0].effect[2][this.rank-1] / 100);
+            var cost = Champion.stats.health.current * (Champion.data.spells[0].effect[3][this.rank-1] / 100);
             Champion.stats.health.current -= cost;
             //Store in the blood well
             Champion.stats.mana.current = Math.min(Champion.stats.mana.current + cost, Champion.stats.mana.total);
@@ -52,13 +52,13 @@ var Scripts = {
             Distance = Math.max(Distance - this.range, 0);
 
             //Calculate and apply damage
-            var basedamage = Champion.data.spells[0].effect[0][this.rank-1];
+            var basedamage = Champion.data.spells[0].effect[1][this.rank-1];
             var scalingstat = Champion.data.spells[0].vars[0]["link"];
             var scalingdamage = Champion.data.spells[0].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.PHYSICAL, this);
 
             //Apply CC
-            Scripts.effects.DarkFlight.duration = Champion.data.spells[0].effect[4][this.rank-1];
+            Scripts.effects.DarkFlight.duration = Champion.data.spells[0].effect[5][this.rank-1];
             Target.addEffect(Scripts.effects.DarkFlight);
 
             //Start Cooldown
@@ -74,11 +74,11 @@ var Scripts = {
         aoe: true,
         toggledOn: false,
         willCast: function() {
-            var basedamage = Champion.data.spells[1].effect[1][this.rank-1];
+            var basedamage = Champion.data.spells[1].effect[2][this.rank-1];
             var scalingstatdamage = Champion.data.spells[1].vars[1]["link"];
             var scalingdamage = Champion.data.spells[1].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstatdamage][0]] [STAT_LINK_MAP[scalingstatdamage][1]];
 
-            var baseheal = Champion.data.spells[1].effect[2][this.rank-1];
+            var baseheal = Champion.data.spells[1].effect[3][this.rank-1];
             var scalingstatheal = Champion.data.spells[1].vars[0]["link"];
             var scalingheal = Champion.data.spells[1].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstatheal][0]] [STAT_LINK_MAP[scalingstatheal][1]];
 
@@ -94,7 +94,7 @@ var Scripts = {
             pcntheal = (baseheal + scalingheal) / Champion.stats.health.total;
 
             if (Champion.stats.health.current < Champion.stats.health.total / 2) {
-                pcntheal *= (100 + Champion.data.spells[1].effect[0][this.rank-1]) / 100;
+                pcntheal *= (100 + Champion.data.spells[1].effect[1][this.rank-1]) / 100;
             }
             //It toggles if damage would be greater than healing and skill is toggled off
             //OR if damage would be less than healing and skill is toggled on
@@ -103,7 +103,7 @@ var Scripts = {
         cast: function() {
             this.toggledOn = !this.toggledOn;
             if (this.toggledOn) {
-                var basedamage = Champion.data.spells[1].effect[1][this.rank-1];
+                var basedamage = Champion.data.spells[1].effect[2][this.rank-1];
                 var scalingstatdamage = Champion.data.spells[1].vars[1]["link"];
                 var scalingdamage = Champion.data.spells[1].vars[1].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstatdamage][0]] [STAT_LINK_MAP[scalingstatdamage][1]];
                 Scripts.events.BloodPrice.strength = basedamage + scalingdamage;
@@ -112,12 +112,12 @@ var Scripts = {
                 Champion.removeEffect(Scripts.effects.BloodThirst);
                 Champion.addEffect(Scripts.effects.BloodPrice);
             } else {
-                var baseheal = Champion.data.spells[1].effect[2][this.rank-1];
+                var baseheal = Champion.data.spells[1].effect[3][this.rank-1];
                 var scalingstatheal = Champion.data.spells[1].vars[0]["link"];
                 var scalingheal = Champion.data.spells[1].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstatheal][0]] [STAT_LINK_MAP[scalingstatheal][1]];
 
                 Scripts.events.BloodThirst.strength = baseheal + scalingheal;
-                Scripts.events.BloodThirst.boost = (100 + Champion.data.spells[1].effect[0][this.rank-1]) / 100;
+                Scripts.events.BloodThirst.boost = (100 + Champion.data.spells[1].effect[1][this.rank-1]) / 100;
 
                 Champion.removeEffect(Scripts.effects.BloodPrice);
                 Champion.addEffect(Scripts.effects.BloodThirst);
@@ -137,7 +137,7 @@ var Scripts = {
         },
         cast: function() {
             //Apply health cost
-            var cost = Champion.stats.health.current * (Champion.data.spells[2].effect[4][this.rank-1] / 100);
+            var cost = Champion.stats.health.current * (Champion.data.spells[2].effect[5][this.rank-1] / 100);
             Champion.stats.health.current -= cost;
             //Store in the blood well
             Champion.stats.mana.current = Math.min(Champion.stats.mana.current + cost, Champion.stats.mana.total);
@@ -145,7 +145,7 @@ var Scripts = {
             Log += "\t" + Champion.data.name + " casts Blades of Torment for " + cost + " health";
 
             //Calculate and apply damage
-            var basedamage = Champion.data.spells[2].effect[0][this.rank-1];
+            var basedamage = Champion.data.spells[2].effect[1][this.rank-1];
             var scalingstat = [];
             scalingstat[0] = Champion.data.spells[2].vars[0]["link"];
             scalingstat[1] = Champion.data.spells[2].vars[1]["link"];
@@ -154,8 +154,8 @@ var Scripts = {
             var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
 
             //Apply CC
-            Scripts.effects.BladesOfTorment.duration = Champion.data.spells[2].effect[3][this.rank - 1] * (1-Champion.stats.tenacity);
-            Scripts.effects.BladesOfTorment.strength = Champion.data.spells[2].effect[1][this.rank - 1] * (1-Champion.stats.slowresist);
+            Scripts.effects.BladesOfTorment.duration = Champion.data.spells[2].effect[4][this.rank - 1] * (1-Champion.stats.tenacity);
+            Scripts.effects.BladesOfTorment.strength = Champion.data.spells[2].effect[2][this.rank - 1] * (1-Champion.stats.slowresist);
             Target.addEffect(Scripts.effects.BladesOfTorment);
 
             //Start Cooldown
@@ -176,13 +176,13 @@ var Scripts = {
         cast: function() {
             Log += "\t" + Champion.data.name + " casts Massacre";
 
-            var basedamage = Champion.data.spells[3].effect[1][this.rank-1];
+            var basedamage = Champion.data.spells[3].effect[2][this.rank-1];
             var scalingstat = Champion.data.spells[3].vars[0]["link"];
             var scalingdamage = Champion.data.spells[3].vars[0].coeff[0] * Champion.stats[STAT_LINK_MAP[scalingstat][0]] [STAT_LINK_MAP[scalingstat][1]];
             var damage = Champion.dealDamage(basedamage + scalingdamage, DAMAGE_TYPES.MAGIC, this);
 
-            Scripts.effects.Massacre.duration = Champion.data.spells[3].effect[0][this.rank - 1];
-            Scripts.effects.Massacre.speed = Champion.data.spells[3].effect[2][this.rank - 1] / 100;
+            Scripts.effects.Massacre.duration = Champion.data.spells[3].effect[1][this.rank - 1];
+            Scripts.effects.Massacre.speed = Champion.data.spells[3].effect[3][this.rank - 1] / 100;
             Scripts.effects.Massacre.range = 175;
             Champion.addEffect(Scripts.effects.Massacre);
 
